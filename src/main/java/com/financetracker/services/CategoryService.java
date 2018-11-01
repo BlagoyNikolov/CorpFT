@@ -1,7 +1,7 @@
 package com.financetracker.services;
 
-import com.financetracker.model.Category;
-import com.financetracker.model.PaymentType;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.PaymentType;
 
 import java.util.Set;
 

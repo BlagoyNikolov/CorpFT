@@ -1,8 +1,6 @@
 package com.financetracker.services;
 
-import com.financetracker.model.User;
-
-import java.util.List;
+import com.financetracker.entities.User;
 
 /**
  * Created by blagoy

@@ -1,10 +1,10 @@
 package com.financetracker.services.Impl;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Budget;
-import com.financetracker.model.Category;
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Budget;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 import com.financetracker.repositories.BudgetRepository;
 import com.financetracker.services.BudgetService;
 import com.financetracker.services.CategoryService;

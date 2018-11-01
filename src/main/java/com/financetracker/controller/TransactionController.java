@@ -1,11 +1,12 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
 import com.financetracker.services.TransactionService;
+import com.financetracker.services.UserService;
 import com.financetracker.util.DateConverters;
 import com.financetracker.util.TransactionComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,13 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @RequestMapping(value = "/{accountId}", method = RequestMethod.GET)
-    public String getAllTransactions(HttpServletRequest request, @PathVariable("accountId") Long accountId, Model model) {
+    public String getAllTransactions(@PathVariable("accountId") Long accountId, Model model, HttpSession session) {
         TreeSet<Transaction> transactions = new TreeSet<>(new TransactionComparator());
-        request.getSession().setAttribute("accountId", accountId);
         transactions.addAll(transactionService.getAllTransactionsByAccountId(accountId));
         String accountName = accountService.getAccountNameByAccountId(accountId);
         String balance = accountService.setAccountBalance(accountId);
         List<Transaction> transactionsPaged = transactionService.getPagingTransactions(accountId, 1);
+        User user = (User) session.getAttribute("user");
 
         int allCount = transactionService.getAllTransactionsByAccountId(accountId).size();
         int pages = (int) Math.ceil(allCount / (double) 10);
@@ -53,9 +54,10 @@ public class TransactionController {
         model.addAttribute("pages", pages);
         model.addAttribute("pagedTransactions", transactionsPaged);
         model.addAttribute("accountId", accountId);
-        request.getSession().setAttribute("accountName", accountName);
-        request.getSession().setAttribute("balance", balance);
-        request.getSession().setAttribute("transactions", transactions);
+        session.setAttribute("user", user);
+        session.setAttribute("accountName", accountName);
+        session.setAttribute("balance", balance);
+        session.setAttribute("transactions", transactions);
 
         return "transactions";
     }
@@ -98,6 +100,7 @@ public class TransactionController {
         String accountName = accountService.getAccountNameByAccountId(transaction.getAccount().getAccountId());
         String category = categoryService.getCategoryNameByCategoryId(transaction.getCategory().getCategoryId());
         LocalDateTime date = transaction.getDate();
+        User user = (User) session.getAttribute("user");
 
         model.addAttribute("transaction", transaction);
         model.addAttribute("editTransactionType", type);
@@ -107,6 +110,7 @@ public class TransactionController {
         model.addAttribute("editTransactionCategory", category);
         model.addAttribute("editTransactionDate", date);
 
+        session.setAttribute("user", user);
         session.setAttribute("link", "account/transaction/" + transactionId);
         session.setAttribute("transactionId", transactionId);
 
@@ -201,7 +205,7 @@ public class TransactionController {
         String balance = NumberFormat.getCurrencyInstance(Locale.US).format(accountBalance);
 //        Set<Account> accounts = accountService.getAllAccounts();
 
-//        model.addAttribute("accounts", accounts);
+//        entities.addAttribute("accounts", accounts);
         model.addAttribute("accountName", accountName);
         model.addAttribute("balance", balance);
         model.addAttribute("pagedTransactions", transactionsPaged);

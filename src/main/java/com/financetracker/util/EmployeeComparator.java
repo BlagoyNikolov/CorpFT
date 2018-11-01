@@ -1,6 +1,6 @@
 package com.financetracker.util;
 
-import com.financetracker.model.User;
+import com.financetracker.entities.User;
 
 import java.util.Comparator;
 

@@ -1,9 +1,9 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Category;
-import com.financetracker.model.PlannedPayment;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.PlannedPayment;
+import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
 import com.financetracker.services.PlannedPaymentService;
@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

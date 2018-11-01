@@ -1,7 +1,7 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.User;
 import com.financetracker.services.ChartService;
 import com.financetracker.services.UserService;
 import com.financetracker.util.EmailSender;
@@ -96,6 +96,7 @@ public class UserController {
 
         if (!userService.existsUser(user.getUsername())) {
             user.setPasswordToken(DigestUtils.sha512Hex(DigestUtils.sha512Hex(user.getPassword()) + user.getPassword()));
+            user.setAdmin(false);
             userService.insertUser(user);
 //            EmailSender.sendSimpleEmail(user.getEmail(), SUBJECT_TEXT_WELCOME, PROFILE_READY);
             session.setAttribute("user", user);

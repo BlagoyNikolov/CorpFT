@@ -1,12 +1,9 @@
 package com.financetracker.repositories;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Budget;
-import com.financetracker.model.Category;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Budget;
+import com.financetracker.entities.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Set;

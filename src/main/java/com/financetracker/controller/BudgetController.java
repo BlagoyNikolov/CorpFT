@@ -1,15 +1,14 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Budget;
-import com.financetracker.model.Category;
-import com.financetracker.model.PaymentType;
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Budget;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.PaymentType;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.BudgetService;
 import com.financetracker.services.CategoryService;
-import com.financetracker.services.UserService;
 import com.financetracker.util.DateConverters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -101,6 +100,7 @@ public class BudgetController {
     BigDecimal amount = budget.getInitialAmount();
     String categoryName = categoryService.getCategoryNameByCategoryId(budget.getCategory().getCategoryId());
     Set<Category> categories = categoryService.getAllCategoriesByType(PaymentType.EXPENSE);
+    User user = (User) session.getAttribute(USER);
 
     model.addAttribute(DATE, date);
     model.addAttribute(ACCOUNT_NAME, acc.getName());
@@ -110,6 +110,7 @@ public class BudgetController {
     model.addAttribute(CATEGORIES, categories);
     model.addAttribute(BUDGET, budget);
 
+    session.setAttribute(USER, user);
     session.setAttribute("link", "budgets/" + budgetId + "/editBudget");
     model.addAttribute("newBudget", new Budget());
 

@@ -1,6 +1,6 @@
 package com.financetracker.repositories;
 
-import com.financetracker.model.*;
+import com.financetracker.entities.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

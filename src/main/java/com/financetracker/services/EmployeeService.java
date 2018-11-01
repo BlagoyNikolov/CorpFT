@@ -1,7 +1,7 @@
 package com.financetracker.services;
 
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 
 import java.util.List;
 import java.util.TreeSet;

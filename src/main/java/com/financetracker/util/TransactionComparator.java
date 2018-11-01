@@ -1,6 +1,6 @@
 package com.financetracker.util;
 
-import com.financetracker.model.Transaction;
+import com.financetracker.entities.Transaction;
 
 import java.util.Comparator;
 

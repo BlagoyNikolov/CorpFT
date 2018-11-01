@@ -1,10 +1,10 @@
 package com.financetracker.services.Impl;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Category;
-import com.financetracker.model.PaymentType;
-import com.financetracker.model.TransactionVisualizer;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.PaymentType;
+import com.financetracker.entities.TransactionVisualizer;
+import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
 import com.financetracker.services.ChartService;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;

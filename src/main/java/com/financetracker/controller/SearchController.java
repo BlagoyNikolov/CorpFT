@@ -1,9 +1,9 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Budget;
-import com.financetracker.model.PlannedPayment;
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Budget;
+import com.financetracker.entities.PlannedPayment;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 import com.financetracker.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

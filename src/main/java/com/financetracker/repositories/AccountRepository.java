@@ -1,10 +1,7 @@
 package com.financetracker.repositories;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Set;
 
 /**
  * Created by blagoy

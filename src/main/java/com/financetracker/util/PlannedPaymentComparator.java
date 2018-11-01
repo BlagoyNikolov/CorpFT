@@ -1,6 +1,6 @@
 package com.financetracker.util;
 
-import com.financetracker.model.PlannedPayment;
+import com.financetracker.entities.PlannedPayment;
 
 import java.util.Comparator;
 

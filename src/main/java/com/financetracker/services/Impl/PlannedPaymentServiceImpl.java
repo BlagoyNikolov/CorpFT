@@ -1,6 +1,6 @@
 package com.financetracker.services.Impl;
 
-import com.financetracker.model.*;
+import com.financetracker.entities.*;
 import com.financetracker.repositories.PlannedPaymentRepository;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;

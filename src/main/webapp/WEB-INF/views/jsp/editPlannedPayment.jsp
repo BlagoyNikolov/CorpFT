@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.math.BigDecimal"%>
-<%@ page import="com.financetracker.model.PaymentType" %>
+<%@ page import="com.financetracker.entities.PaymentType" %>
 <%@ taglib prefix="f" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
@@ -128,11 +128,13 @@
 						  </div>
 		            <%-- </form> --%>
 		            </f:form>
-		            <form action="deletePlannedPayment/${plannedPaymentId}" method="post" id="deleteForm">
-		            	<div class="box-footer">
-							<input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit" class="btn btn-danger" value="Delete Payment"></input>
-    					</div>
-					</form>
+					<c:if test="${(user.isAdmin)}">
+						<form action="deletePlannedPayment/${plannedPaymentId}" method="post" id="deleteForm">
+							<div class="box-footer">
+								<input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit" class="btn btn-danger" value="Delete Payment"></input>
+							</div>
+						</form>
+					</c:if>
 	          	</div>
         	</div>
 		</section>

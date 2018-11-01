@@ -1,4 +1,4 @@
-package com.financetracker.model;
+package com.financetracker.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

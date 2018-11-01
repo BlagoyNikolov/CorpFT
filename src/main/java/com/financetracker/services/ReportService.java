@@ -1,13 +1,12 @@
 package com.financetracker.services;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.Transaction;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.Transaction;
+import com.financetracker.entities.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**

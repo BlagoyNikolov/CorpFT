@@ -42,12 +42,16 @@
                     <a href="/account/transfer/accountId/${accountId}" type="button"
                        class="btn btn-block btn-default btn-lg"><i class="ion ion-arrow-swap"></i> Transfer</a>
                 </div>
-                <form action="/account/deleteAccount/${accountId}" method="post" id="deleteForm">
-                    <div class="col-sm-3">
-                        <input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit"
-                               class="btn btn-block btn-danger btn-lg" value="Delete Account"></input>
-                    </div>
-                </form>
+
+                <c:if test="${(user.isAdmin)}">
+                    <form action="/account/deleteAccount/${accountId}" method="post" id="deleteForm">
+                        <div class="col-sm-3">
+                            <input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit"
+                                   class="btn btn-block btn-danger btn-lg" value="Delete Account"></input>
+                        </div>
+                    </form>
+                </c:if>
+
             </div>
         </div>
 

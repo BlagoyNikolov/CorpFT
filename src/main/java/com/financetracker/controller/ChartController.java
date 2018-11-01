@@ -1,7 +1,7 @@
 package com.financetracker.controller;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.ChartService;
 import com.financetracker.util.DateConverters;

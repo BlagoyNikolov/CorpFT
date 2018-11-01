@@ -1,6 +1,6 @@
 package com.financetracker.util;
 
-import com.financetracker.model.Budget;
+import com.financetracker.entities.Budget;
 
 import java.time.LocalDateTime;
 

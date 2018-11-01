@@ -1,7 +1,7 @@
 package com.financetracker.services;
 
-import com.financetracker.model.Account;
-import com.financetracker.model.User;
+import com.financetracker.entities.Account;
+import com.financetracker.entities.User;
 
 import java.math.BigDecimal;
 import java.util.Optional;

@@ -1,7 +1,6 @@
 package com.financetracker.repositories;
 
-import com.financetracker.model.PlannedPayment;
-import com.financetracker.model.User;
+import com.financetracker.entities.PlannedPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

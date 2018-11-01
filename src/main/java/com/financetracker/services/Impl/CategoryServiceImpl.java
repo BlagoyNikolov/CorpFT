@@ -1,7 +1,7 @@
 package com.financetracker.services.Impl;
 
-import com.financetracker.model.Category;
-import com.financetracker.model.PaymentType;
+import com.financetracker.entities.Category;
+import com.financetracker.entities.PaymentType;
 import com.financetracker.repositories.CategoryRepository;
 import com.financetracker.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

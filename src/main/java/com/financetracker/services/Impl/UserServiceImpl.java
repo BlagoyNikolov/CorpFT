@@ -1,6 +1,6 @@
 package com.financetracker.services.Impl;
 
-import com.financetracker.model.User;
+import com.financetracker.entities.User;
 import com.financetracker.repositories.UserRepository;
 import com.financetracker.services.UserService;
 import org.apache.commons.codec.digest.DigestUtils;

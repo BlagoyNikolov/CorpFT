@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.math.BigDecimal"%>
-<%@ page import="com.financetracker.model.PaymentType" %>
+<%@ page import="com.financetracker.entities.PaymentType" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -28,18 +28,22 @@
             <section class="content">
                 <div style="margin-bottom: 25px">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <a href="<c:url value='/budgets/${ budgetId }/editBudget'></c:url>" type="button" class="btn btn-block btn-primary btn-lg"><i class="fa fa-edit"></i> Edit budget</a>
-                        </div>
+                        <c:if test="${(user.isAdmin)}">
+                            <div class="col-sm-3">
+                                <a href="<c:url value='/budgets/${ budgetId }/editBudget'></c:url>" type="button" class="btn btn-block btn-primary btn-lg"><i class="fa fa-edit"></i> Edit budget</a>
+                            </div>
+
+                            <form action="/budgets/${ budgetId }/delete" method="post" id="deleteForm">
+                                <div class="col-sm-3">
+                                    <input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit" class="btn btn-block btn-danger btn-lg" value="Delete Budget">
+                                </div>
+                            </form>
+                        </c:if>
+
                         <div class="col-sm-3">
                             <%--<a href="<c:url value='/budgets'></c:url>" type="button" class="btn btn-block btn-default btn-lg"><i class="ion ion-android-arrow-back"></i> Back</a>--%>
                             <a href="/budgets" type="button" class="btn btn-block btn-default btn-lg"><i class="ion ion-android-arrow-back"></i> Back</a>
                         </div>
-                        <form action="/budgets/${ budgetId }/delete" method="post" id="deleteForm">
-                            <div class="col-sm-3">
-                                <input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit" class="btn btn-block btn-danger btn-lg" value="Delete Budget">
-                            </div>
-                        </form>
                     </div>
                 </div>
 

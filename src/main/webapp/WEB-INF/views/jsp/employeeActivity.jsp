@@ -26,7 +26,7 @@
 </div>
 <div class="content-wrapper">
     <section class="content-header">
-        <h2><c:out value="${employee.firstName}"></c:out></h2>
+        <h2>Transactions added by <c:out value="${employee.firstName}"></c:out></h2>
     </section>
     <section class="content">
         <c:if test="${empty pagedTransactions }">
