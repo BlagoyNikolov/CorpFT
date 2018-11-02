@@ -11,26 +11,26 @@ import java.util.List;
  */
 public interface PlannedPaymentService {
 
-    List<PlannedPayment> getAllPlannedPayments();
+  List<PlannedPayment> getAllPlannedPayments();
 
-    List<PlannedPayment> getAllPlannedPaymentsByAccountId(long accountId);
+  List<PlannedPayment> getAllPlannedPaymentsByAccountId(long accountId);
 
-    List<PlannedPayment> getAllPlannedPaymentsByCategoryId(long categoryId);
+  List<PlannedPayment> getAllPlannedPaymentsByCategoryId(long categoryId);
 
-    void insertPlannedPayment(PlannedPayment plannedPayment);
+  void insertPlannedPayment(PlannedPayment plannedPayment);
 
-    void updatePlannedPayment(PlannedPayment plannedPayment);
+  void updatePlannedPayment(PlannedPayment plannedPayment);
 
-    void postPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
-                            PlannedPayment plannedPayment, long plannedPaymentId);
+  void postPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
+                          PlannedPayment plannedPayment, long plannedPaymentId);
 
-    void deletePlannedPayment(long plannedPaymentId);
+  void deletePlannedPayment(long plannedPaymentId);
 
-    PlannedPayment getPlannedPaymentByPlannedPaymentId(long plannedPaymentId);
+  PlannedPayment getPlannedPaymentByPlannedPaymentId(long plannedPaymentId);
 
-    List<PlannedPayment> getAllPlannedPaymentsByUser(User user);
+  List<PlannedPayment> getAllPlannedPaymentsByUser(User user);
 
-    void plannedPaymentDailyCronJob();
+  void plannedPaymentDailyCronJob();
 
-    List<PlannedPayment> getPagingPlannedPayments(User user, int page);
+  List<PlannedPayment> getPagingPlannedPayments(User user, int page);
 }

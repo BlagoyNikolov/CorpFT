@@ -2,6 +2,7 @@ package com.financetracker.services.Impl;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Category;
+import com.financetracker.entities.Currency;
 import com.financetracker.entities.Transaction;
 import com.financetracker.entities.PaymentType;
 import com.financetracker.entities.User;
@@ -97,10 +98,10 @@ public class AccountServiceImpl implements AccountService {
     updateAccount(to);
 
     Category transferCategory = categoryService.getCategoryByCategoryName(TRANSFER);
-    Transaction t1 = new Transaction(PaymentType.EXPENSE, LocalDateTime.now(), amount, from, transferCategory, user);
+    Transaction t1 = new Transaction(PaymentType.EXPENSE, LocalDateTime.now(), amount, from, transferCategory, user, from.getCurrency());
     t1.setDescription(TRANSFER_TO_ACCOUNT + to.getName());
     t1.setInsertedBy(user.getFirstName() + " " + user.getLastName());
-    Transaction t2 = new Transaction(PaymentType.INCOME, LocalDateTime.now(), amount, to, transferCategory, user);
+    Transaction t2 = new Transaction(PaymentType.INCOME, LocalDateTime.now(), amount, to, transferCategory, user, to.getCurrency());
     t2.setDescription(TRANSFER_FROM_ACCOUNT + from.getName());
     t2.setInsertedBy(user.getFirstName() + " " + user.getLastName());
 
@@ -137,7 +138,14 @@ public class AccountServiceImpl implements AccountService {
 
   public String setAccountBalance(Long accountId) {
     BigDecimal accountBalance = getAmountByAccountId(accountId);
-    String balance = NumberFormat.getCurrencyInstance(Locale.US).format(accountBalance);
+    Locale currencyLocale = determineCurrencyLocale(accountId);
+    String balance = NumberFormat.getCurrencyInstance(currencyLocale).format(accountBalance);
     return accountBalance.signum() == -1 ? ("-" + balance) : balance;
+  }
+
+  private Locale determineCurrencyLocale(Long accountId) {
+    Account accountCurrency = accountRepository.findByAccountId(accountId);
+    Currency currency = accountCurrency.getCurrency();
+    return new Locale.Builder().setLanguage(currency.getLanguage()).setRegion(currency.getRegion()).build();
   }
 }

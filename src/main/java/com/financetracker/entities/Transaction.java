@@ -68,6 +68,13 @@ public class Transaction {
   @Column(name = "inserted_by")
   private String insertedBy;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+  private Currency currency;
+
+  @Column(name = "account_amount")
+  private BigDecimal accountAmount;
+
   @ManyToMany
   @JoinTable(
       name = "budgets_has_transactions",
@@ -79,24 +86,14 @@ public class Transaction {
   public Transaction() {
   }
 
-  public Transaction(PaymentType type, LocalDateTime date, BigDecimal amount, Account account, Category category, User user) {
+  public Transaction(PaymentType type, LocalDateTime date, BigDecimal amount, Account account, Category category, User user, Currency currency) {
     this.type = type;
     this.date = date;
     this.amount = amount;
     this.account = account;
     this.category = category;
     this.user = user;
-  }
-
-  public Transaction(PaymentType type, String description, BigDecimal amount,
-                     Account account, Category category, LocalDateTime date, User user) {
-    this(type, date, amount, account, category, user);
-    this.description = description;
-  }
-
-  public static Transaction createTransactionByPlannedPayment(PaymentType type, String description, PlannedPayment plannedPayment, User user) {
-    return new Transaction(type, description, plannedPayment.getAmount(), plannedPayment.getAccount(),
-        plannedPayment.getCategory(), LocalDateTime.now(), user);
+    this.currency = currency;
   }
 
   public long getTransactionId() {
@@ -169,5 +166,95 @@ public class Transaction {
 
   public void setInsertedBy(String insertedBy) {
     this.insertedBy = insertedBy;
+  }
+
+  public Currency getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(Currency currency) {
+    this.currency = currency;
+  }
+
+  public BigDecimal getAccountAmount() {
+    return accountAmount;
+  }
+
+  public void setAccountAmount(BigDecimal accountAmount) {
+    this.accountAmount = accountAmount;
+  }
+
+  public static class TransactionBuilder {
+    private PaymentType paymentType;
+    private String description;
+    private BigDecimal amount;
+    private Account account;
+    private Category category;
+    private LocalDateTime date;
+    private User user;
+    private Currency currency;
+    private BigDecimal accountAmount;
+
+    public TransactionBuilder() {
+    }
+
+    public TransactionBuilder setPaymentType(PaymentType paymentType) {
+      this.paymentType = paymentType;
+      return this;
+    }
+
+    public TransactionBuilder setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public TransactionBuilder setAmount(BigDecimal amount) {
+      this.amount = amount;
+      return this;
+    }
+
+    public TransactionBuilder setAccount(Account account) {
+      this.account = account;
+      return this;
+    }
+
+    public TransactionBuilder setCategory(Category category) {
+      this.category = category;
+      return this;
+    }
+
+    public TransactionBuilder setDate(LocalDateTime date) {
+      this.date = date;
+      return this;
+    }
+
+    public TransactionBuilder setUser(User user) {
+      this.user = user;
+      return this;
+    }
+
+    public TransactionBuilder setCurrency(Currency currency) {
+      this.currency = currency;
+      return this;
+    }
+
+    public TransactionBuilder setAccountAmount(BigDecimal accountAmount) {
+      this.accountAmount = accountAmount;
+      return this;
+    }
+
+    public Transaction build() {
+      Transaction trn = new Transaction();
+      trn.type = this.paymentType;
+      trn.description = this.description;
+      trn.amount = this.amount;
+      trn.account = this.account;
+      trn.category = this.category;
+      trn.date = this.date;
+      trn.user = this.user;
+      trn.currency = this.currency;
+      trn.accountAmount = this.accountAmount;
+      return trn;
+    }
   }
 }

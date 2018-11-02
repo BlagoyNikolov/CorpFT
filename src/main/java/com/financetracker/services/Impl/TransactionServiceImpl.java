@@ -3,6 +3,7 @@ package com.financetracker.services.Impl;
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Budget;
 import com.financetracker.entities.Category;
+import com.financetracker.entities.Currency;
 import com.financetracker.entities.PaymentType;
 import com.financetracker.entities.Transaction;
 import com.financetracker.entities.User;
@@ -10,6 +11,7 @@ import com.financetracker.repositories.TransactionRepository;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.BudgetService;
 import com.financetracker.services.CategoryService;
+import com.financetracker.services.CurrencyService;
 import com.financetracker.services.TransactionService;
 import com.financetracker.util.PagingUtil;
 import com.financetracker.util.TransactionComparator;
@@ -42,6 +44,9 @@ public class TransactionServiceImpl implements TransactionService {
   @Autowired
   private BudgetService budgetService;
 
+  @Autowired
+  private CurrencyService currencyService;
+
   public List<Transaction> getAllTransactionsByAccountId(long accountId) {
     return transactionRepository.findByAccountAccountId(accountId);
   }
@@ -56,22 +61,35 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Transactional
   public void postTransaction(User user, String accountName, String category, String type, LocalDateTime date, String amount,
-                              Transaction transaction, long transactionId) {
+                              Transaction transaction, long transactionId, String currency) {
 
-    Account acc = accountService.getAccountByAccountName(accountName);
-    Category cat = categoryService.getCategoryByCategoryName(category);
-    Transaction newTransaction = new Transaction(PaymentType.valueOf(type), transaction.getDescription(),
-        BigDecimal.valueOf(Double.valueOf(amount)), acc, cat, date, user);
+    Account persistedAccount = accountService.getAccountByAccountName(accountName);
+    Category persistedCategory = categoryService.getCategoryByCategoryName(category);
+    Currency persistedCurrency = currencyService.getCurrencyByCurrencyName(currency);
+    BigDecimal convertedValue = currencyService.convertToAccountCurrency(persistedCurrency, persistedAccount.getCurrency(), transaction.getAmount());
+//    Transaction newTransaction = new Transaction(PaymentType.valueOf(type), transaction.getDescription(),
+//        BigDecimal.valueOf(Double.valueOf(amount)), persistedAccount, persistedCategory, date, user, transaction.getCurrency(), convertedValue);
+    Transaction newTransaction = new Transaction.TransactionBuilder()
+        .setPaymentType(PaymentType.valueOf(type))
+        .setDescription(transaction.getDescription())
+        .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
+        .setAccount(persistedAccount)
+        .setCategory(persistedCategory)
+        .setDate(date)
+        .setUser(user)
+        .setCurrency(transaction.getCurrency())
+        .setAccountAmount(convertedValue)
+        .build();
     if (transactionId != 0) {
       newTransaction.setTransactionId(transactionId);
     }
-    BigDecimal newValue = BigDecimal.valueOf(Double.valueOf(amount));
-    BigDecimal oldValue = accountService.getAmountByAccountId(acc.getAccountId());
+    BigDecimal newValue = convertedValue;
+    BigDecimal oldValue = accountService.getAmountByAccountId(persistedAccount.getAccountId());
 
     if (transactionId != 0) {
-      updateExistingTransaction(user, transactionId, acc, newTransaction, newValue, oldValue);
+      updateExistingTransaction(user, transactionId, persistedAccount, newTransaction, newValue, oldValue);
     } else {
-      insertNewTransaction(user, type, acc, newTransaction, newValue, oldValue);
+      insertNewTransaction(user, type, persistedAccount, newTransaction, newValue, oldValue);
     }
   }
 
@@ -219,7 +237,17 @@ public class TransactionServiceImpl implements TransactionService {
     Account acc = accountService.getAccountByAccountName(account.getName());
     Category cat = categoryService.getCategoryByCategoryName("TRANSFER");
     String description = String.format("First transaction in %s", acc.getName());
-    Transaction trn = new Transaction(PaymentType.INCOME, description, acc.getAmount(), acc, cat, LocalDateTime.now(), user);
+    Transaction trn = new Transaction.TransactionBuilder()
+        .setPaymentType(PaymentType.INCOME)
+        .setDescription(description)
+        .setAmount(acc.getAmount())
+        .setAccount(acc)
+        .setCategory(cat)
+        .setDate(LocalDateTime.now())
+        .setUser(user)
+        .setCurrency(account.getCurrency())
+        .setAccountAmount(acc.getAmount())
+        .build();
     trn.setInsertedBy(user.getFirstName() + " " + user.getLastName());
     trn.setCategoryName("Initial Deposit");
     transactionRepository.save(trn);

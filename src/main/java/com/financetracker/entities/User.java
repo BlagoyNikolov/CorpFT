@@ -22,149 +22,149 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "username", "email"}))
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private long userId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "user_id")
+  private long userId;
 
-    @NotNull
-    @Size(min = 3, max = 45)
-    @NotEmpty
-    @Pattern(regexp = "[^\\s]+")
-    @Column(name = "username")
-    private String username;
+  @NotNull
+  @Size(min = 3, max = 45)
+  @NotEmpty
+  @Pattern(regexp = "[^\\s]+")
+  @Column(name = "username")
+  private String username;
 
-    @NotNull
-    @NotEmpty
-    @Column(name = "password", updatable = false)
-    private byte[] password;
+  @NotNull
+  @NotEmpty
+  @Column(name = "password", updatable = false)
+  private byte[] password;
 
-    @NotNull
-    @NotEmpty
-    @Email
-    @Pattern(regexp =
-            "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$")
-    @Column(name = "email")
-    private String email;
+  @NotNull
+  @NotEmpty
+  @Email
+  @Pattern(regexp =
+      "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$")
+  @Column(name = "email")
+  private String email;
 
-    @NotNull
-    @Size(min = 3, max = 45)
-    @NotEmpty
-    @Pattern(regexp = "[^\\s]+")
-    @Column(name = "first_name")
-    private String firstName;
+  @NotNull
+  @Size(min = 3, max = 45)
+  @NotEmpty
+  @Pattern(regexp = "[^\\s]+")
+  @Column(name = "first_name")
+  private String firstName;
 
-    @NotNull
-    @Size(min = 3, max = 45)
-    @NotEmpty
-    @Pattern(regexp = "[^\\s]+")
-    @Column(name = "last_name")
-    private String lastName;
+  @NotNull
+  @Size(min = 3, max = 45)
+  @NotEmpty
+  @Pattern(regexp = "[^\\s]+")
+  @Column(name = "last_name")
+  private String lastName;
 
-    @Column(name = "password_token")
-    private String passwordToken;
+  @Column(name = "password_token")
+  private String passwordToken;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private Set<Account> accounts;
+  //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+  //    private Set<Account> accounts;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-//    private Set<Category> ownCategories;
+  //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+  //    private Set<Category> ownCategories;
 
-    @Column(name = "isAdnmin")
-    private Boolean isAdmin;
+  @Column(name = "isAdnmin")
+  private Boolean isAdmin;
 
-    public User() {
-//        this.accounts = new HashSet<>();
-//        this.ownCategories = new HashSet<>();
-    }
+  public User() {
+    //        this.accounts = new HashSet<>();
+    //        this.ownCategories = new HashSet<>();
+  }
 
-    public User(String username, String password, String email, String firstName, String lastName, Set<Account> accounts,
-                Set<Category> ownCategories, String passwordToken) {
-        this.username = username;
-        this.password = DigestUtils.sha512(password);
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-//        this.accounts = accounts;
-//        this.ownCategories = ownCategories;
-        this.passwordToken = passwordToken;
-    }
+  public User(String username, String password, String email, String firstName, String lastName, Set<Account> accounts,
+              Set<Category> ownCategories, String passwordToken) {
+    this.username = username;
+    this.password = DigestUtils.sha512(password);
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    //        this.accounts = accounts;
+    //        this.ownCategories = ownCategories;
+    this.passwordToken = passwordToken;
+  }
 
-    public User(String username, String password, String email, String firstName, String lastName) {
-        this(username, password, email, firstName, lastName, new HashSet<>(), new HashSet<>(),
-                DigestUtils.sha512Hex(DigestUtils.sha512Hex(password) + username));
-    }
+  public User(String username, String password, String email, String firstName, String lastName) {
+    this(username, password, email, firstName, lastName, new HashSet<>(), new HashSet<>(),
+        DigestUtils.sha512Hex(DigestUtils.sha512Hex(password) + username));
+  }
 
-    public User(String email, String firstName) {
-        this.email = email;
-        this.firstName = firstName;
-    }
+  public User(String email, String firstName) {
+    this.email = email;
+    this.firstName = firstName;
+  }
 
-    public long getUserId() {
-        return userId;
-    }
+  public long getUserId() {
+    return userId;
+  }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username.trim();
-    }
+  public void setUsername(String username) {
+    this.username = username.trim();
+  }
 
-    public byte[] getPassword() {
-        return password;
-    }
+  public byte[] getPassword() {
+    return password;
+  }
 
-    public void setPassword(String password) {
-        this.password = DigestUtils.sha512(password.trim());
-    }
+  public void setPassword(String password) {
+    this.password = DigestUtils.sha512(password.trim());
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName.trim();
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName.trim();
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName.trim();
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName.trim();
+  }
 
-//    public Set<Account> getAccounts() {
-//        return Collections.unmodifiableSet(accounts);
-//    }
+  //    public Set<Account> getAccounts() {
+  //        return Collections.unmodifiableSet(accounts);
+  //    }
 
-    public String getPasswordToken() {
-        return passwordToken;
-    }
+  public String getPasswordToken() {
+    return passwordToken;
+  }
 
-    public void setPasswordToken(String passwordToken) {
-        this.passwordToken = passwordToken;
-    }
+  public void setPasswordToken(String passwordToken) {
+    this.passwordToken = passwordToken;
+  }
 
-    public Boolean getIsAdmin() {
-        return isAdmin;
-    }
+  public Boolean getIsAdmin() {
+    return isAdmin;
+  }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
+  public void setAdmin(Boolean admin) {
+    isAdmin = admin;
+  }
 }

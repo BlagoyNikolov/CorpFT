@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,166 +31,179 @@ import java.util.Objects;
 @Table(name = "accounts", uniqueConstraints = @UniqueConstraint(columnNames = {"account_id"}))
 public class Account {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "account_id")
-    private long accountId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "account_id")
+  private long accountId;
 
-    @NotNull
-    @Size(min = 2, max = 45)
-    @NotEmpty
-    @Column(name = "name")
-    private String name;
+  @NotNull
+  @Size(min = 2, max = 45)
+  @NotEmpty
+  @Column(name = "name")
+  private String name;
 
-    @NotNull
-    @Min((long) -999999999.9999)
-    @Max((long) 999999999.9999)
-    @Column(name = "amount")
-    private BigDecimal amount;
+  @NotNull
+  @Min((long) -999999999.9999)
+  @Max((long) 999999999.9999)
+  @Column(name = "amount")
+  private BigDecimal amount;
 
-//    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
-//    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-//    private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
-    private List<Transaction> transactions;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+  private Currency currency;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
-    private List<Budget> budgets;
+  //    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
+  //    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+  //    private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
-    private List<PlannedPayment> plannedPayments;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
+  private List<Transaction> transactions;
 
-    public Account() {
-        this.transactions = new ArrayList<>();
-        this.budgets = new ArrayList<>();
-        this.plannedPayments = new ArrayList<>();
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
+  private List<Budget> budgets;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
+  private List<PlannedPayment> plannedPayments;
+
+  public Account() {
+    this.transactions = new ArrayList<>();
+    this.budgets = new ArrayList<>();
+    this.plannedPayments = new ArrayList<>();
+  }
+
+  public Account(String name, BigDecimal amount, User user,
+                 List<Transaction> transactions, List<Budget> budgets, List<PlannedPayment> plannedPayments) {
+    this.name = name;
+    this.amount = amount;
+    //        this.user = user;
+    this.transactions = transactions;
+    this.budgets = budgets;
+    this.plannedPayments = plannedPayments;
+  }
+
+  public Account(String name, BigDecimal amount, User user) {
+    this(name, amount, user, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+  }
+
+  public long getAccountId() {
+    return accountId;
+  }
+
+  public void setAccountId(long accountId) {
+    this.accountId = accountId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name.trim();
+  }
+
+  public BigDecimal getAmount() {
+    return amount;
+  }
+
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
+  }
+
+  //    public User getUser() {
+  //        return user;
+  //    }
+  //
+  //    public void setUser(User user) {
+  //        this.user = user;
+  //    }
+
+  public List<Transaction> getTransactions() {
+    return Collections.unmodifiableList(transactions);
+  }
+
+  public List<Budget> getBudgets() {
+    return Collections.unmodifiableList(budgets);
+  }
+
+  public List<PlannedPayment> getPlannedPayments() {
+    return Collections.unmodifiableList(plannedPayments);
+  }
+
+  public void setTransactions(List<Transaction> transactions) {
+    this.transactions = transactions;
+  }
+
+  public void setBudgets(List<Budget> budgets) {
+    this.budgets = budgets;
+  }
+
+  public Currency getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(Currency currency) {
+    this.currency = currency;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(accountId, name, amount, transactions, budgets, plannedPayments);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-
-    public Account(String name, BigDecimal amount, User user,
-                   List<Transaction> transactions, List<Budget> budgets, List<PlannedPayment> plannedPayments) {
-        this.name = name;
-        this.amount = amount;
-//        this.user = user;
-        this.transactions = transactions;
-        this.budgets = budgets;
-        this.plannedPayments = plannedPayments;
+    if (obj == null) {
+      return false;
     }
-
-    public Account(String name, BigDecimal amount, User user) {
-        this(name, amount, user, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    if (getClass() != obj.getClass()) {
+      return false;
     }
-
-    public long getAccountId() {
-        return accountId;
+    Account other = (Account) obj;
+    if (accountId != other.accountId) {
+      return false;
     }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    if (amount == null) {
+      if (other.amount != null) {
+        return false;
+      }
+    } else if (!amount.equals(other.amount)) {
+      return false;
     }
-
-    public String getName() {
-        return name;
+    if (budgets == null) {
+      if (other.budgets != null) {
+        return false;
+      }
+    } else if (!budgets.equals(other.budgets)) {
+      return false;
     }
-
-    public void setName(String name) {
-        this.name = name.trim();
+    if (name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
     }
-
-    public BigDecimal getAmount() {
-        return amount;
+    if (plannedPayments == null) {
+      if (other.plannedPayments != null) {
+        return false;
+      }
+    } else if (!plannedPayments.equals(other.plannedPayments)) {
+      return false;
     }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    if (transactions == null) {
+      if (other.transactions != null) {
+        return false;
+      }
+    } else if (!transactions.equals(other.transactions)) {
+      return false;
     }
-
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
-
-    public List<Transaction> getTransactions() {
-        return Collections.unmodifiableList(transactions);
-    }
-
-    public List<Budget> getBudgets() {
-        return Collections.unmodifiableList(budgets);
-    }
-
-    public List<PlannedPayment> getPlannedPayments() {
-        return Collections.unmodifiableList(plannedPayments);
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
-    public void setBudgets(List<Budget> budgets) {
-        this.budgets = budgets;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(accountId, name, amount, transactions, budgets, plannedPayments);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Account other = (Account) obj;
-        if (accountId != other.accountId) {
-            return false;
-        }
-        if (amount == null) {
-            if (other.amount != null) {
-                return false;
-            }
-        } else if (!amount.equals(other.amount)) {
-            return false;
-        }
-        if (budgets == null) {
-            if (other.budgets != null) {
-                return false;
-            }
-        } else if (!budgets.equals(other.budgets)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (plannedPayments == null) {
-            if (other.plannedPayments != null) {
-                return false;
-            }
-        } else if (!plannedPayments.equals(other.plannedPayments)) {
-            return false;
-        }
-        if (transactions == null) {
-            if (other.transactions != null) {
-                return false;
-            }
-        } else if (!transactions.equals(other.transactions)) {
-            return false;
-        }
-//        if (user != other.user) {
-//            return false;
-//        }
-        return true;
-    }
+    //        if (user != other.user) {
+    //            return false;
+    //        }
+    return true;
+  }
 }

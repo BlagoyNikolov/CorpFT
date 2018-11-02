@@ -18,34 +18,34 @@ import java.util.TreeSet;
  */
 public interface BudgetService {
 
-    List<Budget> getAllBudgetsByAccount(Account account);
+  List<Budget> getAllBudgetsByAccount(Account account);
 
-    List<Budget> getAllBudgetsByCategory(Category category);
+  List<Budget> getAllBudgetsByCategory(Category category);
 
-    void insertBudget(Budget budget);
+  void insertBudget(Budget budget);
 
-    void updateBudget(Budget budget);
+  void updateBudget(Budget budget);
 
-    void postBudget(Budget budget, User user, Account account, Category category, String date);
+  void postBudget(Budget budget, User user, Account account, Category category, String date);
 
-    void postEditBudget(Long budgetId, Budget budget, User user, Budget oldBudget, Account acc,
-                        Category category, String date);
+  void postEditBudget(Long budgetId, Budget budget, User user, Budget oldBudget, Account acc,
+                      Category category, String date);
 
-    void deleteBudget(Budget budget);
+  void deleteBudget(Budget budget);
 
-    boolean existsBudget(LocalDateTime date, Category category, Account account);
+  boolean existsBudget(LocalDateTime date, Category category, Account account);
 
-    Map<Budget, BigDecimal> getBudgets(User user);
+  Map<Budget, BigDecimal> getBudgets(User user);
 
-    TreeSet<Transaction> getBudgetTransactions(Long budgetId);
+  TreeSet<Transaction> getBudgetTransactions(Long budgetId);
 
-    Set<Budget> getAllBudgetsByDateCategoryAndAccount(LocalDateTime date, Category category, Account account);
+  Set<Budget> getAllBudgetsByDateCategoryAndAccount(LocalDateTime date, Category category, Account account);
 
-    boolean isBetweenTwoDates(LocalDateTime date, LocalDateTime from, LocalDateTime to);
+  boolean isBetweenTwoDates(LocalDateTime date, LocalDateTime from, LocalDateTime to);
 
-    Set<Budget> getAllBudgetsByUser(User user);
+  Set<Budget> getAllBudgetsByUser(User user);
 
-    Budget getBudgetByBudgetId(long budgetId);
+  Budget getBudgetByBudgetId(long budgetId);
 
-    List<Transaction> getPagingTransactions(Long budgetId, int page);
+  List<Transaction> getPagingTransactions(Long budgetId, int page);
 }

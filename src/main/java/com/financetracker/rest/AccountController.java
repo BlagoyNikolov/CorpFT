@@ -1,8 +1,9 @@
-package com.financetracker.controller;
+package com.financetracker.rest;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
+import com.financetracker.services.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,9 +24,13 @@ public class AccountController {
   @Autowired
   private AccountService accountService;
 
+  @Autowired
+  private CurrencyService currencyService;
+
   @RequestMapping(value = "/addAccount", method = RequestMethod.GET)
   public String makeAccount(Model viewModel) {
     Account acc = new Account();
+    viewModel.addAttribute("currencies", currencyService.getCurrencyList());
     viewModel.addAttribute("account", acc);
     return "addAccount";
   }

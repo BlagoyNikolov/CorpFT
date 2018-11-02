@@ -106,11 +106,11 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     if (plannedPayment.getPaymentType().equals(PaymentType.EXPENSE)) {
       acc.setAmount(oldValue.subtract(newValue));
       accountService.updateAccount(acc);
-      transaction = Transaction.createTransactionByPlannedPayment(PaymentType.EXPENSE, PLANNED_PAYMENT_EXPENSE, plannedPayment, null);
+      transaction = createTransactionByPlannedPayment(PaymentType.EXPENSE, PLANNED_PAYMENT_EXPENSE, plannedPayment, null, plannedPayment.getAmount());
     } else if (plannedPayment.getPaymentType().equals(PaymentType.INCOME)) {
       acc.setAmount(oldValue.add(newValue));
       accountService.updateAccount(acc);
-      transaction = Transaction.createTransactionByPlannedPayment(PaymentType.INCOME, PLANNED_PAYMENT_INCOME, plannedPayment, null);
+      transaction = createTransactionByPlannedPayment(PaymentType.INCOME, PLANNED_PAYMENT_INCOME, plannedPayment, null, plannedPayment.getAmount());
     }
     transactionService.insertTransactionAndBudgetCheck(transaction);
     this.deletePlannedPayment(plannedPayment.getPlannedPaymentId());
@@ -135,5 +135,19 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
   public List<PlannedPayment> getPagingPlannedPayments(User user, int page) {
     TreeMap<Integer, List<PlannedPayment>> plannedPayments = getPlannedPaymentsChunks(user);
     return plannedPayments.get(page);
+  }
+
+  private Transaction createTransactionByPlannedPayment(PaymentType type, String description, PlannedPayment plannedPayment, User user, BigDecimal accountAmount) {
+    return new Transaction.TransactionBuilder()
+        .setPaymentType(type)
+        .setDescription(description)
+        .setAmount(plannedPayment.getAmount())
+        .setAccount(plannedPayment.getAccount())
+        .setCategory(plannedPayment.getCategory())
+        .setDate(LocalDateTime.now())
+        .setUser(user)
+        .setCurrency(plannedPayment.getCurrency())
+        .setAccountAmount(accountAmount)
+        .build();
   }
 }

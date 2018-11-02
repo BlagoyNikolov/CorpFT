@@ -27,111 +27,123 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name = "planned_payments", uniqueConstraints = @UniqueConstraint(columnNames = {"planned_payment_id"}))
 public class PlannedPayment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "planned_payment_id")
-    private long plannedPaymentId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "planned_payment_id")
+  private long plannedPaymentId;
 
-    @NotNull
-    @Size(min = 2, max = 45)
-    @NotEmpty
-    @Column(name = "name")
-    private String name;
+  @NotNull
+  @Size(min = 2, max = 45)
+  @NotEmpty
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+  @Column(name = "type")
+  @Enumerated(EnumType.STRING)
+  private PaymentType paymentType;
 
-    @Column(name = "from_date")
-    private LocalDateTime fromDate;
+  @Column(name = "from_date")
+  private LocalDateTime fromDate;
 
-    @NotNull
-    @Min(1)
-    @Max((long) 999999999.9999)
-    @Column(name = "amount")
-    private BigDecimal amount;
+  @NotNull
+  @Min(1)
+  @Max((long) 999999999.9999)
+  @Column(name = "amount")
+  private BigDecimal amount;
 
-    @Size(min = 2, max = 45)
-    @Column(name = "description")
-    private String description;
+  @Size(min = 2, max = 45)
+  @Column(name = "description")
+  private String description;
 
-    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Account.class)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
-    private Account account;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Account.class)
+  @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+  private Account account;
 
-    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Category.class)
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
-    private Category category;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Category.class)
+  @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+  private Category category;
 
-    private String categoryName;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+  private Currency currency;
 
-    public PlannedPayment() {
-    }
+  private String categoryName;
 
-    public PlannedPayment(String name, PaymentType paymentType, LocalDateTime fromDate, BigDecimal amount,
-                          String description, Account account, Category category) {
-        this.name = name;
-        this.paymentType = paymentType;
-        this.fromDate = fromDate;
-        this.amount = amount;
-        this.description = description;
-        this.account = account;
-        this.category = category;
-    }
+  public PlannedPayment() {
+  }
 
-    public long getPlannedPaymentId() {
-        return plannedPaymentId;
-    }
+  public PlannedPayment(String name, PaymentType paymentType, LocalDateTime fromDate, BigDecimal amount,
+                        String description, Account account, Category category) {
+    this.name = name;
+    this.paymentType = paymentType;
+    this.fromDate = fromDate;
+    this.amount = amount;
+    this.description = description;
+    this.account = account;
+    this.category = category;
+  }
 
-    public void setPlannedPaymentId(long plannedPaymentId) {
-        this.plannedPaymentId = plannedPaymentId;
-    }
+  public long getPlannedPaymentId() {
+    return plannedPaymentId;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setPlannedPaymentId(long plannedPaymentId) {
+    this.plannedPaymentId = plannedPaymentId;
+  }
 
-    public void setName(String name) {
-        this.name = name.trim();
-    }
+  public String getName() {
+    return name;
+  }
 
-    public PaymentType getPaymentType() {
-        return paymentType;
-    }
+  public void setName(String name) {
+    this.name = name.trim();
+  }
 
-    public LocalDateTime getFromDate() {
-        return fromDate;
-    }
+  public PaymentType getPaymentType() {
+    return paymentType;
+  }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+  public LocalDateTime getFromDate() {
+    return fromDate;
+  }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+  public BigDecimal getAmount() {
+    return amount;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public Account getAccount() {
-        return account;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public Category getCategory() {
-        return category;
-    }
+  public Account getAccount() {
+    return account;
+  }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+  public Category getCategory() {
+    return category;
+  }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
+  public String getCategoryName() {
+    return categoryName;
+  }
+
+  public void setCategoryName(String categoryName) {
+    this.categoryName = categoryName;
+  }
+
+  public Currency getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(Currency currency) {
+    this.currency = currency;
+  }
 }

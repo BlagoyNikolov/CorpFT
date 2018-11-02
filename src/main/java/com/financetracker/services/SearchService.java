@@ -14,11 +14,11 @@ import java.util.Set;
  */
 public interface SearchService {
 
-    Set<Transaction> getAllTransactionsByKeyword(String keyword);
+  Set<Transaction> getAllTransactionsByKeyword(String keyword);
 
-    Set<PlannedPayment> getAllPlannedPaymentsByKeyword(String keyword);
+  Set<PlannedPayment> getAllPlannedPaymentsByKeyword(String keyword);
 
-    Map<Budget, BigDecimal> getAllBudgetsByKeywordAndUser(String keyword, User user);
+  Map<Budget, BigDecimal> getAllBudgetsByKeywordAndUser(String keyword, User user);
 
-    boolean isKeywordValid(String keyword);
+  boolean isKeywordValid(String keyword);
 }

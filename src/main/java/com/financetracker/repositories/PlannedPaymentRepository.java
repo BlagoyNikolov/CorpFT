@@ -12,17 +12,17 @@ import java.util.Set;
  */
 public interface PlannedPaymentRepository extends JpaRepository<PlannedPayment, Long> {
 
-    List<PlannedPayment> findAll();
+  List<PlannedPayment> findAll();
 
-    List<PlannedPayment> findByAccountAccountId(long accountId);
+  List<PlannedPayment> findByAccountAccountId(long accountId);
 
-    List<PlannedPayment> findByCategoryCategoryId(long categoryId);
+  List<PlannedPayment> findByCategoryCategoryId(long categoryId);
 
-    PlannedPayment findByPlannedPaymentId(long plannedPaymentId);
+  PlannedPayment findByPlannedPaymentId(long plannedPaymentId);
 
-//    List<PlannedPayment> findByAccountUser(User user);
+  //    List<PlannedPayment> findByAccountUser(User user);
 
-    List<PlannedPayment> findAllByFromDate(LocalDateTime localDateTime);
+  List<PlannedPayment> findAllByFromDate(LocalDateTime localDateTime);
 
-    Set<PlannedPayment> findAllByDescriptionContaining(String keyword);
+  Set<PlannedPayment> findAllByDescriptionContaining(String keyword);
 }

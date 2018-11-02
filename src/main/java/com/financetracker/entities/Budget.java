@@ -30,164 +30,164 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name = "budgets", uniqueConstraints = @UniqueConstraint(columnNames = {"budget_id"}))
 public class Budget {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "budget_id")
-    private long budgetId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "budget_id")
+  private long budgetId;
 
-    @NotNull
-    @Size(min = 2, max = 45)
-    @NotEmpty
-    @Column(name = "name")
-    private String name;
+  @NotNull
+  @Size(min = 2, max = 45)
+  @NotEmpty
+  @Column(name = "name")
+  private String name;
 
-    @NotNull
-    @Min(1)
-    @Max((long) 999999999.9999)
-    @Column(name = "initial_amount")
-    private BigDecimal initialAmount;
+  @NotNull
+  @Min(1)
+  @Max((long) 999999999.9999)
+  @Column(name = "initial_amount")
+  private BigDecimal initialAmount;
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+  @Column(name = "amount")
+  private BigDecimal amount;
 
-    @Column(name = "from_date")
-    private LocalDateTime fromDate;
+  @Column(name = "from_date")
+  private LocalDateTime fromDate;
 
-    @Column(name = "to_date")
-    private LocalDateTime toDate;
+  @Column(name = "to_date")
+  private LocalDateTime toDate;
 
-    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Account.class)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
-    private Account account;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Account.class)
+  @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+  private Account account;
 
-    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Category.class)
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
-    private Category category;
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Category.class)
+  @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+  private Category category;
 
-    @ManyToMany
-    @JoinTable(
-        name = "budgets_has_transactions",
-        joinColumns = @JoinColumn(name = "budget_id", referencedColumnName = "budget_id"),
-        inverseJoinColumns = @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")
-    )
-    private Set<Transaction> transactions = new HashSet<Transaction>();
+  @ManyToMany
+  @JoinTable(
+      name = "budgets_has_transactions",
+      joinColumns = @JoinColumn(name = "budget_id", referencedColumnName = "budget_id"),
+      inverseJoinColumns = @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")
+  )
+  private Set<Transaction> transactions = new HashSet<Transaction>();
 
-    public Budget() {
-    }
+  public Budget() {
+  }
 
-    public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
-                  LocalDateTime toDate, Account account, Category category, Set<Transaction> transactions) {
-        this(name, initialAmount, amount, fromDate, toDate, account, category, transactions);
+  public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
+                LocalDateTime toDate, Account account, Category category, Set<Transaction> transactions) {
+    this(name, initialAmount, amount, fromDate, toDate, account, category, transactions);
 
-        this.budgetId = budgetId;
-    }
+    this.budgetId = budgetId;
+  }
 
-    public Budget(long budgetId, String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
-                  Account account, Category category) {
-        this(budgetId, name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
-    }
+  public Budget(long budgetId, String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
+                Account account, Category category) {
+    this(budgetId, name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
+  }
 
-    public Budget(String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
-                  Account account, Category category) {
-        this(name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
-    }
+  public Budget(String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
+                Account account, Category category) {
+    this(name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
+  }
 
-    public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
-                  LocalDateTime toDate, Account account, Category category) {
-        this(name, initialAmount, amount, fromDate, toDate, account, category, new HashSet<>());
+  public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
+                LocalDateTime toDate, Account account, Category category) {
+    this(name, initialAmount, amount, fromDate, toDate, account, category, new HashSet<>());
 
-        this.budgetId = budgetId;
-    }
+    this.budgetId = budgetId;
+  }
 
-    public Budget(String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate, LocalDateTime toDate,
-                  Account account, Category category, Set<Transaction> transactions) {
-        this.name = name;
-        this.initialAmount = initialAmount;
-        this.amount = amount;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.account = account;
-        this.category = category;
-        this.transactions = transactions;
-    }
+  public Budget(String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate, LocalDateTime toDate,
+                Account account, Category category, Set<Transaction> transactions) {
+    this.name = name;
+    this.initialAmount = initialAmount;
+    this.amount = amount;
+    this.fromDate = fromDate;
+    this.toDate = toDate;
+    this.account = account;
+    this.category = category;
+    this.transactions = transactions;
+  }
 
-    public long getBudgetId() {
-        return budgetId;
-    }
+  public long getBudgetId() {
+    return budgetId;
+  }
 
-    public void setBudgetId(long budgetId) {
-        this.budgetId = budgetId;
-    }
+  public void setBudgetId(long budgetId) {
+    this.budgetId = budgetId;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name.trim();
-    }
+  public void setName(String name) {
+    this.name = name.trim();
+  }
 
-    public BigDecimal getInitialAmount() {
-        return initialAmount;
-    }
+  public BigDecimal getInitialAmount() {
+    return initialAmount;
+  }
 
-    public void setInitialAmount(BigDecimal initialAmount) {
-        this.initialAmount = initialAmount;
-    }
+  public void setInitialAmount(BigDecimal initialAmount) {
+    this.initialAmount = initialAmount;
+  }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+  public BigDecimal getAmount() {
+    return amount;
+  }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
+  }
 
-    public LocalDateTime getFromDate() {
-        return fromDate;
-    }
+  public LocalDateTime getFromDate() {
+    return fromDate;
+  }
 
-    public void setFromDate(LocalDateTime fromDate) {
-        this.fromDate = fromDate;
-    }
+  public void setFromDate(LocalDateTime fromDate) {
+    this.fromDate = fromDate;
+  }
 
-    public LocalDateTime getToDate() {
-        return toDate;
-    }
+  public LocalDateTime getToDate() {
+    return toDate;
+  }
 
-    public void setToDate(LocalDateTime toDate) {
-        this.toDate = toDate;
-    }
+  public void setToDate(LocalDateTime toDate) {
+    this.toDate = toDate;
+  }
 
-    public Account getAccount() {
-        return account;
-    }
+  public Account getAccount() {
+    return account;
+  }
 
-    public void setAccount(Account account) {
-        this.account = account;
-    }
+  public void setAccount(Account account) {
+    this.account = account;
+  }
 
-    public Category getCategory() {
-        return category;
-    }
+  public Category getCategory() {
+    return category;
+  }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+  public void setCategory(Category category) {
+    this.category = category;
+  }
 
-    public Set<Transaction> getTransactions() {
-        return Collections.unmodifiableSet(transactions);
-    }
+  public Set<Transaction> getTransactions() {
+    return Collections.unmodifiableSet(transactions);
+  }
 
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
-    }
+  public void setTransactions(Set<Transaction> transactions) {
+    this.transactions = transactions;
+  }
 
-    public void addTransaction(Transaction transaction) {
-        this.transactions.add(transaction);
-    }
+  public void addTransaction(Transaction transaction) {
+    this.transactions.add(transaction);
+  }
 
-    public void removeTransactions() {
-        this.transactions.clear();
-    }
+  public void removeTransactions() {
+    this.transactions.clear();
+  }
 }

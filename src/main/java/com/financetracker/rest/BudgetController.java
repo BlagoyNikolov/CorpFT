@@ -1,4 +1,4 @@
-package com.financetracker.controller;
+package com.financetracker.rest;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Budget;

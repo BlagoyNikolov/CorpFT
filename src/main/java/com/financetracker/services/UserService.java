@@ -7,25 +7,25 @@ import com.financetracker.entities.User;
  */
 public interface UserService {
 
-    void insertUser(User user);
+  void insertUser(User user);
 
-    void updateUser(User user);
+  void updateUser(User user);
 
-    void updateUserPassword(User user, String password);
+  void updateUserPassword(User user, String password);
 
-    User getUser(String username);
+  User getUser(String username);
 
-    boolean existsUser(String username);
+  boolean existsUser(String username);
 
-    boolean isValidLogin(String username, byte[] password);
+  boolean isValidLogin(String username, byte[] password);
 
-    boolean existEmail(String email);
+  boolean existEmail(String email);
 
-    User getUserByEmail(String email);
+  User getUserByEmail(String email);
 
-    boolean existUserByPasswordToken(String token);
+  boolean existUserByPasswordToken(String token);
 
-    User getUserByPasswordToken(String token);
+  User getUserByPasswordToken(String token);
 
-    User getUserByUserId(long userId);
+  User getUserByUserId(long userId);
 }

@@ -14,13 +14,13 @@ import java.util.TreeSet;
  */
 public interface ReportService {
 
-    TreeSet<Transaction> getAllReportTransactions(User user, Set<Account> allAccounts);
+  TreeSet<Transaction> getAllReportTransactions(User user, Set<Account> allAccounts);
 
-    TreeSet<Transaction> getFilteredReportTransactions(User user, String categoryName, String type, String accName, String date,
-                                                       Set<Account> allAccounts);
+  TreeSet<Transaction> getFilteredReportTransactions(User user, String categoryName, String type, String accName, String date,
+                                                     Set<Account> allAccounts);
 
-    Set<Transaction> getReportTransactions(User user, String type, long categoryId, long accountId,
-                                           LocalDateTime from, LocalDateTime to);
+  Set<Transaction> getReportTransactions(User user, String type, long categoryId, long accountId,
+                                         LocalDateTime from, LocalDateTime to);
 
-    List<Transaction> getPagingTransactions(TreeSet<Transaction> allTransactions, int page);
+  List<Transaction> getPagingTransactions(TreeSet<Transaction> allTransactions, int page);
 }
