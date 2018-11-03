@@ -29,11 +29,14 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   @Override
   public List<String> getCurrencyList() {
-    return Arrays.asList("BGN", "CAD","CHF", "EUR", "GBP", "JPY", "USD");
+    return Arrays.asList("BGN", "CAD", "EUR", "GBP", "JPY", "USD");
   }
 
   @Override
   public BigDecimal convertToAccountCurrency(Currency from, Currency to, BigDecimal amount) {
+    if (from.getCurrencyId().equals(to.getCurrencyId())) {
+      return amount;
+    }
     RestTemplate restTemplate = new RestTemplate();
     String currencyPair = from.getCurrencyId() + "_" + to.getCurrencyId();
     String fullUrl = fxEndpoint + currencyPair;

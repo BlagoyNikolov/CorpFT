@@ -2,12 +2,14 @@ package com.financetracker.services.Impl;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Category;
+import com.financetracker.entities.Currency;
 import com.financetracker.entities.PaymentType;
 import com.financetracker.entities.TransactionVisualizer;
 import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
 import com.financetracker.services.ChartService;
+import com.financetracker.services.CurrencyService;
 import com.financetracker.util.DateConverters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,9 @@ public class ChartServiceImpl implements ChartService {
   @Autowired
   private CategoryService categoryService;
 
+  @Autowired
+  private CurrencyService currencyService;
+
   public TreeSet<Account> getAllAccounts(User user) {
     TreeSet<Account> accounts = new TreeSet<>((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()));
     accounts.addAll(accountService.getAllAccounts());
@@ -46,6 +51,8 @@ public class ChartServiceImpl implements ChartService {
   public BigDecimal calculateAllBalance(Set<Account> accounts) {
     BigDecimal allBalance = BigDecimal.valueOf(0);
     for (Account account : accounts) {
+//      Currency euro = currencyService.getCurrencyByCurrencyName("EUR");
+//      BigDecimal convertedAmount = currencyService.convertToAccountCurrency(account.getCurrency(), euro, account.getAmount());
       allBalance = allBalance.add(account.getAmount());
     }
     return allBalance;

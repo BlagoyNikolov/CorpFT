@@ -4,6 +4,7 @@ import com.financetracker.entities.*;
 import com.financetracker.repositories.PlannedPaymentRepository;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
+import com.financetracker.services.CurrencyService;
 import com.financetracker.services.PlannedPaymentService;
 import com.financetracker.services.TransactionService;
 import com.financetracker.util.PagingUtil;
@@ -37,44 +38,44 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
   @Autowired
   private TransactionService transactionService;
 
-  public List<PlannedPayment> getAllPlannedPayments() {
-    return plannedPaymentRepository.findAll();
+  @Autowired
+  private CurrencyService currencyService;
+
+  public void addPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
+                                String currencyId, PlannedPayment plannedPayment) {
+
+    PlannedPayment payment = generatePlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
+    plannedPaymentRepository.save(payment);
   }
 
-  public List<PlannedPayment> getAllPlannedPaymentsByAccountId(long accountId) {
-    return plannedPaymentRepository.findByAccountAccountId(accountId);
+  public void editPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
+                                 String currencyId, PlannedPayment plannedPayment, Long plannedPaymentId) {
+
+    PlannedPayment payment = generatePlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
+    payment.setPlannedPaymentId(plannedPaymentId);
+    plannedPaymentRepository.save(payment);
   }
 
-  public List<PlannedPayment> getAllPlannedPaymentsByCategoryId(long categoryId) {
-    return plannedPaymentRepository.findByCategoryCategoryId(categoryId);
-  }
-
-  public void insertPlannedPayment(PlannedPayment plannedPayment) {
-    plannedPaymentRepository.save(plannedPayment);
-  }
-
-  public void updatePlannedPayment(PlannedPayment plannedPayment) {
-    plannedPaymentRepository.save(plannedPayment);
-  }
-
-  public void postPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
-                                 PlannedPayment plannedPayment, long plannedPaymentId) {
+  private PlannedPayment generatePlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date,
+                                                String amount, String currencyId, PlannedPayment plannedPayment) {
 
     Account acc = accountService.getAccountByAccountName(account);
     Category cat = categoryService.getCategoryByCategoryName(category);
-    PlannedPayment payment = new PlannedPayment(name, PaymentType.valueOf(type), date,
-        BigDecimal.valueOf(Double.valueOf(amount)), plannedPayment.getDescription(), acc, cat);
-
-    if (plannedPaymentId != 0) {
-      payment.setPlannedPaymentId(plannedPaymentId);
-      updatePlannedPayment(payment);
-    } else {
-      insertPlannedPayment(payment);
-    }
-  }
-
-  public void deletePlannedPayment(long plannedPaymentId) {
-    plannedPaymentRepository.delete(plannedPaymentId);
+    Currency currency = currencyService.getCurrencyByCurrencyName(currencyId);
+    BigDecimal convertedValue = currencyService.convertToAccountCurrency(currency, acc.getCurrency(), plannedPayment.getAmount());
+    return new PlannedPayment.PlannedPaymentBuilder()
+        .setName(name)
+        .setPaymentType(PaymentType.valueOf(type))
+        .setDate(date)
+        .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
+        .setAccountAmount(convertedValue)
+        .setDescription(plannedPayment.getDescription())
+        .setAccount(acc)
+        .setCategory(cat)
+        .setUser(user)
+        .setCurrency(currency)
+        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+        .build();
   }
 
   public PlannedPayment getPlannedPaymentByPlannedPaymentId(long plannedPaymentId) {
@@ -87,7 +88,7 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
   }
 
   @Scheduled(cron = "0 0 9 * * ?", zone = "Europe/Athens") //Fire at 9:00am every day
-  public void plannedPaymentDailyCronJob() {
+  private void plannedPaymentDailyCronJob() {
     LocalDate localDate = LocalDateTime.now().toLocalDate();
     LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth(), 0, 0, 0);
 
@@ -113,7 +114,11 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
       transaction = createTransactionByPlannedPayment(PaymentType.INCOME, PLANNED_PAYMENT_INCOME, plannedPayment, null, plannedPayment.getAmount());
     }
     transactionService.insertTransactionAndBudgetCheck(transaction);
-    this.deletePlannedPayment(plannedPayment.getPlannedPaymentId());
+    deletePlannedPayment(plannedPayment.getPlannedPaymentId());
+  }
+
+  public void deletePlannedPayment(long plannedPaymentId) {
+    plannedPaymentRepository.delete(plannedPaymentId);
   }
 
   public TreeMap<Integer, List<PlannedPayment>> getPlannedPaymentsChunks(User user) {

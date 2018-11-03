@@ -49,7 +49,7 @@
                         <div class="small-box bg-aqua">
                     </c:if>
                         <div class="inner">
-                          <h3><i class="ion-social-usd" style="font-size: 20px;"> </i><fmt:formatNumber value="${account.amount}" minFractionDigits="2"/></h3>
+                          <h3></i><fmt:formatNumber value="${account.amount}" minFractionDigits="2"/> <c:out value="${account.currency.currencyId}"></c:out></h3>
                           <p><c:out value="${account.name}"></c:out></p>
                         </div>
                         <div class="icon">

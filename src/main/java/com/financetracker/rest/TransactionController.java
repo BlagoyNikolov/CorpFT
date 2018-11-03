@@ -46,7 +46,7 @@ public class TransactionController {
   public String getAllTransactions(@PathVariable("accountId") Long accountId, Model model, HttpSession session) {
     TreeSet<Transaction> transactions = new TreeSet<>(new TransactionComparator());
     transactions.addAll(transactionService.getAllTransactionsByAccountId(accountId));
-    String accountName = accountService.getAccountNameByAccountId(accountId);
+    Account account = accountService.getAccountByAccountId(accountId);
     String balance = accountService.setAccountBalance(accountId);
     List<Transaction> transactionsPaged = transactionService.getPagingTransactions(accountId, 1);
     User user = (User) session.getAttribute("user");
@@ -58,7 +58,8 @@ public class TransactionController {
     model.addAttribute("pagedTransactions", transactionsPaged);
     model.addAttribute("accountId", accountId);
     session.setAttribute("user", user);
-    session.setAttribute("accountName", accountName);
+    session.setAttribute("accountName", account.getName());
+    session.setAttribute("accountCurrency", account.getCurrency().getCurrencyId());
     session.setAttribute("balance", balance);
     session.setAttribute("transactions", transactions);
 
@@ -104,14 +105,19 @@ public class TransactionController {
     BigDecimal amount = transaction.getAmount();
     String accountName = accountService.getAccountNameByAccountId(transaction.getAccount().getAccountId());
     String category = categoryService.getCategoryNameByCategoryId(transaction.getCategory().getCategoryId());
+    String currency = currencyService.getCurrencyByCurrencyName(transaction.getCurrency().getCurrencyId()).getCurrencyId();
+    Set<Account> allAccounts = accountService.getAllAccounts();
     LocalDateTime date = transaction.getDate();
     User user = (User) session.getAttribute("user");
 
+    model.addAttribute("currencies", currencyService.getCurrencyList());
     model.addAttribute("transaction", transaction);
     model.addAttribute("editTransactionType", type);
     model.addAttribute("editTransactionDescription", description);
     model.addAttribute("editTransactionAmount", amount);
+    model.addAttribute("editTransactionCurrency", currency);
     model.addAttribute("editTransactionAccount", accountName);
+    model.addAttribute("allAccounts", allAccounts);
     model.addAttribute("editTransactionCategory", category);
     model.addAttribute("editTransactionDate", date);
 

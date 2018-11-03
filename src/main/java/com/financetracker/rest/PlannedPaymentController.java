@@ -6,6 +6,7 @@ import com.financetracker.entities.PlannedPayment;
 import com.financetracker.entities.User;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
+import com.financetracker.services.CurrencyService;
 import com.financetracker.services.PlannedPaymentService;
 import com.financetracker.services.UserService;
 import com.financetracker.util.DateConverters;
@@ -41,10 +42,10 @@ public class PlannedPaymentController {
   private AccountService accountService;
 
   @Autowired
-  private UserService userService;
+  private CurrencyService currencyService;
 
   @RequestMapping(value = "/plannedPayments", method = RequestMethod.GET)
-  public String getAllPlannedPayments(HttpServletRequest request, HttpSession session, Model model) {
+  public String getAllPlannedPayments(HttpSession session, Model model) {
     User user = (User) session.getAttribute("user");
 
     //        Set<Category> allCategories = new HashSet<Category>();
@@ -58,9 +59,9 @@ public class PlannedPaymentController {
     //        allCategories.addAll(ownCategories);
     Set<Account> accounts = accountService.getAllAccounts();
 
-    request.getSession().setAttribute("plannedPayments", plannedPayments);
-    request.getSession().setAttribute("accounts", accounts);
-    request.getSession().setAttribute("categories", allCategories);
+    session.setAttribute("plannedPayments", plannedPayments);
+    session.setAttribute("accounts", accounts);
+    session.setAttribute("categories", allCategories);
     model.addAttribute("pagedPlannedPayments", plannedPaymentsPaged);
     model.addAttribute("pages", pages);
 
@@ -71,12 +72,13 @@ public class PlannedPaymentController {
   public String getAddPlannedPayment(HttpSession session, Model model) {
     PlannedPayment plannedPayment = new PlannedPayment();
     model.addAttribute("plannedPayment", plannedPayment);
+    model.addAttribute("currencies", currencyService.getCurrencyList());
     session.setAttribute("link", "addPlannedPayment");
     return "addPlannedPayment";
   }
 
   @RequestMapping(value = "/addPlannedPayment", method = RequestMethod.POST)
-  public String postAddPlannedPayment(HttpServletRequest request, Model model,
+  public String addPlannedPayment(HttpServletRequest request, Model model,
                                       @Valid @ModelAttribute("plannedPayment") PlannedPayment plannedPayment, BindingResult bindingResult) {
     String type = request.getParameter("type");
     String account = request.getParameter("account");
@@ -84,6 +86,7 @@ public class PlannedPaymentController {
     String date = request.getParameter("date");
     String name = request.getParameter("name");
     String amount = request.getParameter("amount");
+    String currency = request.getParameter("currency");
     User user = (User) request.getSession().getAttribute("user");
 
     if (type.isEmpty() || account.isEmpty() || category.isEmpty() || date.isEmpty() || bindingResult.hasErrors()) {
@@ -99,7 +102,7 @@ public class PlannedPaymentController {
       return "addPlannedPayment";
     }
 
-    plannedPaymentService.postPlannedPayment(user, account, category, name, type, newDate, amount, plannedPayment, 0);
+    plannedPaymentService.addPlannedPayment(user, account, category, name, type, newDate, amount, currency, plannedPayment);
     Account acc = accountService.getAccountByAccountName(account);
 
     request.setAttribute("user", user);
@@ -118,6 +121,7 @@ public class PlannedPaymentController {
     BigDecimal amount = plannedPayment.getAmount();
     String accountName = accountService.getAccountNameByAccountId(plannedPayment.getAccount().getAccountId());
     String category = categoryService.getCategoryNameByCategoryId(plannedPayment.getCategory().getCategoryId());
+    String currency = currencyService.getCurrencyByCurrencyName(plannedPayment.getCurrency().getCurrencyId()).getCurrencyId();
     LocalDateTime date = plannedPayment.getFromDate();
 
     model.addAttribute("plannedPayment", plannedPayment);
@@ -127,7 +131,9 @@ public class PlannedPaymentController {
     model.addAttribute("editPlannedPaymentAmount", amount);
     model.addAttribute("editPlannedPaymentAccount", accountName);
     model.addAttribute("editPlannedPaymentCategory", category);
+    model.addAttribute("editPlannedPaymentCurrency", currency);
     model.addAttribute("editPlannedPaymentDate", date);
+    model.addAttribute("currencies", currencyService.getCurrencyList());
 
     session.setAttribute("link", "payment/" + plannedPaymentId);
     session.setAttribute("plannedPaymentId", plannedPaymentId);
@@ -144,6 +150,7 @@ public class PlannedPaymentController {
     String category = request.getParameter("category");
     String amount = request.getParameter("amount");
     String date = request.getParameter("date");
+    String currency = request.getParameter("currency");
 
     long plannedPaymentId = (long) request.getSession().getAttribute("plannedPaymentId");
 
@@ -176,7 +183,7 @@ public class PlannedPaymentController {
     }
 
     User user = (User) session.getAttribute("user");
-    plannedPaymentService.postPlannedPayment(user, account, category, name, type, newDate, amount, plannedPayment, plannedPaymentId);
+    plannedPaymentService.editPlannedPayment(user, account, category, name, type, newDate, amount, currency, plannedPayment, plannedPaymentId);
 
     return "redirect:/plannedPayments";
   }

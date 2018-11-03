@@ -56,6 +56,10 @@ public class Transaction {
   @JoinColumn(name = "category_id", referencedColumnName = "category_id")
   private Category category;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+  private Currency currency;
+
   @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private User user;
@@ -67,10 +71,6 @@ public class Transaction {
 
   @Column(name = "inserted_by")
   private String insertedBy;
-
-  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
-  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
-  private Currency currency;
 
   @Column(name = "account_amount")
   private BigDecimal accountAmount;
@@ -84,16 +84,6 @@ public class Transaction {
   private Set<Budget> budgets = new HashSet<Budget>();
 
   public Transaction() {
-  }
-
-  public Transaction(PaymentType type, LocalDateTime date, BigDecimal amount, Account account, Category category, User user, Currency currency) {
-    this.type = type;
-    this.date = date;
-    this.amount = amount;
-    this.account = account;
-    this.category = category;
-    this.user = user;
-    this.currency = currency;
   }
 
   public long getTransactionId() {
@@ -194,6 +184,7 @@ public class Transaction {
     private User user;
     private Currency currency;
     private BigDecimal accountAmount;
+    private String insertedBy;
 
     public TransactionBuilder() {
     }
@@ -243,6 +234,11 @@ public class Transaction {
       return this;
     }
 
+    public TransactionBuilder setInsertedBy(String insertedBy) {
+      this.insertedBy = insertedBy;
+      return this;
+    }
+
     public Transaction build() {
       Transaction trn = new Transaction();
       trn.type = this.paymentType;
@@ -254,6 +250,7 @@ public class Transaction {
       trn.user = this.user;
       trn.currency = this.currency;
       trn.accountAmount = this.accountAmount;
+      trn.insertedBy = this.insertedBy;
       return trn;
     }
   }

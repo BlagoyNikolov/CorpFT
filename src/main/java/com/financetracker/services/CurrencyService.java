@@ -11,5 +11,5 @@ public interface CurrencyService {
 
   List<String> getCurrencyList();
 
-  BigDecimal convertToAccountCurrency(Currency persistedCurrency, Currency transactionCurrency, BigDecimal amount);
+  BigDecimal convertToAccountCurrency(Currency from, Currency to, BigDecimal amount);
 }

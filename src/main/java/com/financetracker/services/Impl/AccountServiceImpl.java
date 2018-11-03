@@ -9,6 +9,7 @@ import com.financetracker.entities.User;
 import com.financetracker.repositories.AccountRepository;
 import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
+import com.financetracker.services.CurrencyService;
 import com.financetracker.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
   @Autowired
   private CategoryService categoryService;
+
+  @Autowired
+  private CurrencyService currencyService;
 
   @Transactional
   public void insertAccount(Account account, User user) {
@@ -86,24 +90,51 @@ public class AccountServiceImpl implements AccountService {
     BigDecimal amount = BigDecimal.valueOf(Double.valueOf(inputAmount));
     Account from = getAccountByAccountName(inputFromAccount);
     Account to = getAccountByAccountName(inputToAccount);
+    Currency fromCurrency = from.getCurrency();
+    Currency toCurrency = to.getCurrency();
 
     BigDecimal currentAccountAmount = from.getAmount();
     BigDecimal newCurrentAccountAmount = currentAccountAmount.subtract(amount);
     from.setAmount(newCurrentAccountAmount);
     updateAccount(from);
 
+    BigDecimal convertedAmount = currencyService.convertToAccountCurrency(fromCurrency, toCurrency, amount);
     BigDecimal otherAccountAmount = to.getAmount();
-    BigDecimal newOtherAccountAmount = otherAccountAmount.add(amount);
+    BigDecimal newOtherAccountAmount = otherAccountAmount.add(convertedAmount);
     to.setAmount(newOtherAccountAmount);
     updateAccount(to);
 
     Category transferCategory = categoryService.getCategoryByCategoryName(TRANSFER);
-    Transaction t1 = new Transaction(PaymentType.EXPENSE, LocalDateTime.now(), amount, from, transferCategory, user, from.getCurrency());
-    t1.setDescription(TRANSFER_TO_ACCOUNT + to.getName());
-    t1.setInsertedBy(user.getFirstName() + " " + user.getLastName());
-    Transaction t2 = new Transaction(PaymentType.INCOME, LocalDateTime.now(), amount, to, transferCategory, user, to.getCurrency());
-    t2.setDescription(TRANSFER_FROM_ACCOUNT + from.getName());
-    t2.setInsertedBy(user.getFirstName() + " " + user.getLastName());
+//    Transaction t1 = new Transaction(PaymentType.EXPENSE, LocalDateTime.now(), amount, from, transferCategory, user, from.getCurrency());
+//    t1.setDescription(TRANSFER_TO_ACCOUNT + to.getName());
+//    t1.setInsertedBy(user.getFirstName() + " " + user.getLastName());
+    Transaction t1 = new Transaction.TransactionBuilder()
+        .setPaymentType(PaymentType.EXPENSE)
+        .setDate(LocalDateTime.now())
+        .setAmount(amount)
+        .setAccountAmount(amount)
+        .setAccount(from)
+        .setCategory(transferCategory)
+        .setUser(user)
+        .setCurrency(from.getCurrency())
+        .setDescription(TRANSFER_TO_ACCOUNT + to.getName())
+        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+        .build();
+//    Transaction t2 = new Transaction(PaymentType.INCOME, LocalDateTime.now(), amount, to, transferCategory, user, to.getCurrency());
+//    t2.setDescription(TRANSFER_FROM_ACCOUNT + from.getName());
+//    t2.setInsertedBy(user.getFirstName() + " " + user.getLastName());
+    Transaction t2 = new Transaction.TransactionBuilder()
+        .setPaymentType(PaymentType.INCOME)
+        .setDate(LocalDateTime.now())
+        .setAmount(convertedAmount)
+        .setAccountAmount(convertedAmount)
+        .setAccount(to)
+        .setCategory(transferCategory)
+        .setUser(user)
+        .setCurrency(to.getCurrency())
+        .setDescription(TRANSFER_TO_ACCOUNT + from.getName())
+        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+        .build();
 
     transactionService.insertTransactionAndBudgetCheck(t1);
     transactionService.insertTransactionAndBudgetCheck(t2);

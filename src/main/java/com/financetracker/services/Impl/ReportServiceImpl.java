@@ -58,7 +58,6 @@ public class ReportServiceImpl implements ReportService {
   public Set<Transaction> getReportTransactions(User user, String type, long categoryId, long accountId,
                                                 LocalDateTime from, LocalDateTime to) {
     Set<Transaction> result = new HashSet<>();
-//    Set<Category> categories = new HashSet<>();
     Set<Category> categories = new HashSet<>();
 
     if (categoryId == 0) {
@@ -70,7 +69,11 @@ public class ReportServiceImpl implements ReportService {
 //      } else {
 //        categories = categoryService.getAllCategoriesByType(PaymentType.valueOf(type));
 //      }
-      categories = categoryService.getAllCategoriesByType(PaymentType.valueOf(type));
+      if (type.equals(ALL_TYPES)) {
+        categories = categoryService.getAllCategories();
+      } else {
+        categories = categoryService.getAllCategoriesByType(PaymentType.valueOf(type));
+      }
     } else {
       categories.add(categoryService.getCategoryByCategoryId(categoryId));
     }
