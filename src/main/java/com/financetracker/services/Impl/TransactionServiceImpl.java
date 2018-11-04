@@ -51,25 +51,35 @@ public class TransactionServiceImpl implements TransactionService {
     return transactionRepository.findByAccountAccountId(accountId);
   }
 
-  public List<Transaction> getAllTransactionsByCategoryId(long categoryId) {
-    return transactionRepository.findByCategoryCategoryId(categoryId);
-  }
-
   public Transaction getTransactionByTransactionId(long transactionId) {
     return transactionRepository.findByTransactionId(transactionId);
   }
 
   @Transactional
-  public void postTransaction(User user, String accountName, String category, String type, LocalDateTime date, String amount,
-                              Transaction transaction, long transactionId, String currency) {
+  public void addTransaction(User user, String accountName, String category, String type, LocalDateTime date, String amount,
+                             Transaction transaction, String currency) {
 
+    Transaction newTransaction = createTransaction(user, accountName, category, type, date, amount, transaction, currency);
+    insertNewTransaction(type, newTransaction.getAccount(), newTransaction, newTransaction.getAccountAmount());
+  }
+
+  @Transactional
+  public void editTransaction(User user, String accountName, String category, String type, LocalDateTime date, String amount,
+                             Transaction transaction, String currency, long transactionId) {
+
+    Transaction existingTransaction = createTransaction(user, accountName, category, type, date, amount, transaction, currency);
+    existingTransaction.setTransactionId(transactionId);
+    updateExistingTransaction(transactionId, existingTransaction.getAccount(), existingTransaction, existingTransaction.getAccountAmount());
+  }
+
+  private Transaction createTransaction(User user, String accountName, String category, String type, LocalDateTime date, String amount,
+                                        Transaction transaction, String currency) {
     Account persistedAccount = accountService.getAccountByAccountName(accountName);
     Category persistedCategory = categoryService.getCategoryByCategoryName(category);
     Currency persistedCurrency = currencyService.getCurrencyByCurrencyName(currency);
     BigDecimal convertedValue = currencyService.convertToAccountCurrency(persistedCurrency, persistedAccount.getCurrency(), transaction.getAmount());
-//    Transaction newTransaction = new Transaction(PaymentType.valueOf(type), transaction.getDescription(),
-//        BigDecimal.valueOf(Double.valueOf(amount)), persistedAccount, persistedCategory, date, user, transaction.getCurrency(), convertedValue);
-    Transaction newTransaction = new Transaction.TransactionBuilder()
+    String categoryName = categoryService.getCategoryNameByCategoryId(persistedCategory.getCategoryId());
+    return new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.valueOf(type))
         .setDescription(transaction.getDescription())
         .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
@@ -78,23 +88,16 @@ public class TransactionServiceImpl implements TransactionService {
         .setDate(date)
         .setUser(user)
         .setCurrency(transaction.getCurrency())
+        .setAccountCurrency(persistedAccount.getCurrency())
         .setAccountAmount(convertedValue)
+        .setCategoryName(categoryName)
+        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
         .build();
-    if (transactionId != 0) {
-      newTransaction.setTransactionId(transactionId);
-    }
-    BigDecimal newValue = convertedValue;
-    BigDecimal oldValue = accountService.getAmountByAccountId(persistedAccount.getAccountId());
-
-    if (transactionId != 0) {
-      updateExistingTransaction(user, transactionId, persistedAccount, newTransaction, newValue, oldValue);
-    } else {
-      insertNewTransaction(user, type, persistedAccount, newTransaction, newValue, oldValue);
-    }
   }
 
-  private void insertNewTransaction(User user, String type, Account acc, Transaction newTransaction,
-                                    BigDecimal newValue, BigDecimal oldValue) {
+  private void insertNewTransaction(String type, Account acc, Transaction newTransaction, BigDecimal convertedValue) {
+    BigDecimal newValue = convertedValue;
+    BigDecimal oldValue = accountService.getAmountByAccountId(newTransaction.getAccount().getAccountId());
     if (type.equals(EXPENSE)) {
       acc.setAmount(oldValue.subtract(newValue));
       accountService.updateAccount(acc);
@@ -102,29 +105,28 @@ public class TransactionServiceImpl implements TransactionService {
       acc.setAmount(oldValue.add(newValue));
       accountService.updateAccount(acc);
     }
-    newTransaction.setInsertedBy(user.getFirstName() + " " + user.getLastName());
-    insertTransactionAndBudgetCheck(newTransaction);
+    insertTransactionAndAddtoBudget(newTransaction);
   }
 
-  private void updateExistingTransaction(User user, long transactionId, Account acc, Transaction newTransaction,
-                                         BigDecimal newValue, BigDecimal oldValue) {
-    Transaction oldTransacation = getTransactionByTransactionId(transactionId);
-    if (oldTransacation.getType().equals(PaymentType.EXPENSE)) {
-      acc.setAmount(oldValue.add(oldTransacation.getAmount()));
+  private void updateExistingTransaction(long transactionId, Account acc, Transaction newTransaction, BigDecimal convertedValue) {
+    BigDecimal newValue = convertedValue;
+    BigDecimal oldValue = accountService.getAmountByAccountId(newTransaction.getAccount().getAccountId());
+    Transaction oldTransaction = getTransactionByTransactionId(transactionId);
+    if (oldTransaction.getType().equals(PaymentType.EXPENSE)) {
+      acc.setAmount(oldValue.add(oldTransaction.getAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).subtract(newValue));
       accountService.updateAccount(acc);
-    } else if (oldTransacation.getType().equals(PaymentType.INCOME)) {
-      acc.setAmount(oldValue.subtract(oldTransacation.getAmount()));
+    } else if (oldTransaction.getType().equals(PaymentType.INCOME)) {
+      acc.setAmount(oldValue.subtract(oldTransaction.getAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).add(newValue));
       accountService.updateAccount(acc);
     }
-    updateTransaction(newTransaction, user);
+    updateTransaction(newTransaction);
   }
 
-  public void insertTransactionAndBudgetCheck(Transaction transaction) {
+  public void insertTransactionAndAddtoBudget(Transaction transaction) {
     Set<Budget> budgets = budgetService.getAllBudgetsByDateCategoryAndAccount(transaction.getDate(),
         transaction.getCategory(), transaction.getAccount());
-    transaction.setCategoryName(categoryService.getCategoryNameByCategoryId(transaction.getCategory().getCategoryId()));
     transactionRepository.save(transaction);
 
     if (budgets.size() != 0 && transaction.getType().equals(PaymentType.EXPENSE)) {
@@ -136,9 +138,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
   }
 
-  private void updateTransaction(Transaction transaction, User user) {
-    transaction.setCategoryName(categoryService.getCategoryNameByCategoryId(transaction.getCategory().getCategoryId()));
-    transaction.setInsertedBy(user.getFirstName() + " " + user.getLastName());
+  private void updateTransaction(Transaction transaction) {
     transactionRepository.save(transaction);
   }
 
@@ -235,8 +235,8 @@ public class TransactionServiceImpl implements TransactionService {
   @Transactional
   public void insertTransaction(User user, Account account) {
     Account acc = accountService.getAccountByAccountName(account.getName());
-    Category cat = categoryService.getCategoryByCategoryName("TRANSFER");
-    String description = String.format("First transaction in %s", acc.getName());
+    Category cat = categoryService.getCategoryByCategoryName("DEPOSIT");
+    String description = String.format("Deposit in %s", acc.getName());
     Transaction trn = new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.INCOME)
         .setDescription(description)
@@ -246,10 +246,11 @@ public class TransactionServiceImpl implements TransactionService {
         .setDate(LocalDateTime.now())
         .setUser(user)
         .setCurrency(account.getCurrency())
+        .setAccountCurrency(account.getCurrency())
         .setAccountAmount(acc.getAmount())
+        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+        .setCategoryName(cat.getName())
         .build();
-    trn.setInsertedBy(user.getFirstName() + " " + user.getLastName());
-    trn.setCategoryName("Initial Deposit");
     transactionRepository.save(trn);
   }
 }

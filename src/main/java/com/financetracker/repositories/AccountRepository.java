@@ -8,10 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-  //    Account findByUserAndName(User user, String name);
   Account findByName(String name);
-
-  //    Set<Account> findByUser(User user);
 
   Account findByAccountId(long accountId);
 }

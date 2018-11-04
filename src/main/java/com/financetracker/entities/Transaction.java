@@ -60,10 +60,15 @@ public class Transaction {
   @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
   private Currency currency;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "account_currency", referencedColumnName = "currency_id")
+  private Currency accountCurrency;
+
   @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private User user;
 
+  @Column(name = "category_name")
   private String categoryName;
 
   @Column(name = "date")
@@ -166,6 +171,14 @@ public class Transaction {
     this.currency = currency;
   }
 
+  public Currency getAccountCurrency() {
+    return accountCurrency;
+  }
+
+  public void setAccountCurrency(Currency accountCurrency) {
+    this.accountCurrency = accountCurrency;
+  }
+
   public BigDecimal getAccountAmount() {
     return accountAmount;
   }
@@ -183,8 +196,10 @@ public class Transaction {
     private LocalDateTime date;
     private User user;
     private Currency currency;
+    private Currency accountCurrency;
     private BigDecimal accountAmount;
     private String insertedBy;
+    private String categoryName;
 
     public TransactionBuilder() {
     }
@@ -229,6 +244,11 @@ public class Transaction {
       return this;
     }
 
+    public TransactionBuilder setAccountCurrency(Currency accountCurrency) {
+      this.accountCurrency = accountCurrency;
+      return this;
+    }
+
     public TransactionBuilder setAccountAmount(BigDecimal accountAmount) {
       this.accountAmount = accountAmount;
       return this;
@@ -236,6 +256,11 @@ public class Transaction {
 
     public TransactionBuilder setInsertedBy(String insertedBy) {
       this.insertedBy = insertedBy;
+      return this;
+    }
+
+    public TransactionBuilder setCategoryName(String categoryName) {
+      this.categoryName = categoryName;
       return this;
     }
 
@@ -249,8 +274,10 @@ public class Transaction {
       trn.date = this.date;
       trn.user = this.user;
       trn.currency = this.currency;
+      trn.accountCurrency = this.accountCurrency;
       trn.accountAmount = this.accountAmount;
       trn.insertedBy = this.insertedBy;
+      trn.categoryName = this.categoryName;
       return trn;
     }
   }

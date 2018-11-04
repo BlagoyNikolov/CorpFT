@@ -36,7 +36,7 @@ public class SearchServiceImpl implements SearchService {
     return plannedPaymentRepository.findAllByDescriptionContaining(keyword);
   }
 
-  public Map<Budget, BigDecimal> getAllBudgetsByKeywordAndUser(String keyword, User user) {
+  public Map<Budget, BigDecimal> getAllBudgetsByKeyword(String keyword) {
 
     Map<Budget, BigDecimal> results = new TreeMap<>((b1, b2) -> {
       if (b2.getFromDate().compareTo(b1.getFromDate()) == 0) {
@@ -45,7 +45,7 @@ public class SearchServiceImpl implements SearchService {
       return b2.getFromDate().compareTo(b1.getFromDate());
     });
 
-    Map<Budget, BigDecimal> budgets = budgetService.getBudgets(user);
+    Map<Budget, BigDecimal> budgets = budgetService.getBudgets();
     for (Map.Entry<Budget, BigDecimal> entry : budgets.entrySet()) {
       Budget budget = entry.getKey();
       if (budget.getName().toLowerCase().contains(keyword.toLowerCase())) {

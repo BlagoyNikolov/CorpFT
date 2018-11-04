@@ -14,13 +14,7 @@ public interface PlannedPaymentRepository extends JpaRepository<PlannedPayment, 
 
   List<PlannedPayment> findAll();
 
-  List<PlannedPayment> findByAccountAccountId(long accountId);
-
-  List<PlannedPayment> findByCategoryCategoryId(long categoryId);
-
   PlannedPayment findByPlannedPaymentId(long plannedPaymentId);
-
-  //    List<PlannedPayment> findByAccountUser(User user);
 
   List<PlannedPayment> findAllByFromDate(LocalDateTime localDateTime);
 

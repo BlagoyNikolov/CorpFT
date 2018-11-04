@@ -30,10 +30,9 @@ public class SearchController {
       return "searchResults";
     }
 
-    User user = (User) session.getAttribute("user");
     Set<Transaction> transactions = searchService.getAllTransactionsByKeyword(keyword);
     Set<PlannedPayment> plannedPayments = searchService.getAllPlannedPaymentsByKeyword(keyword);
-    Map<Budget, BigDecimal> budgets = searchService.getAllBudgetsByKeywordAndUser(keyword, user);
+    Map<Budget, BigDecimal> budgets = searchService.getAllBudgetsByKeyword(keyword);
 
     model.addAttribute("transactions", transactions);
     model.addAttribute("plannedPayments", plannedPayments);

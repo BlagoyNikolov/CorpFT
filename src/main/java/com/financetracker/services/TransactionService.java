@@ -18,14 +18,15 @@ public interface TransactionService {
 
   List<Transaction> getAllTransactionsByAccountId(long accountId);
 
-  List<Transaction> getAllTransactionsByCategoryId(long categoryId);
-
   Transaction getTransactionByTransactionId(long transactionId);
 
-  void insertTransactionAndBudgetCheck(Transaction transaction);
+  void insertTransactionAndAddtoBudget(Transaction transaction);
 
-  void postTransaction(User user, String account, String category, String type, LocalDateTime date, String amount,
-                       Transaction transaction, long transactionId, String currency);
+  void addTransaction(User user, String account, String category, String type, LocalDateTime date, String amount,
+                       Transaction transaction, String currency);
+
+  void editTransaction(User user, String account, String category, String type, LocalDateTime date, String amount,
+                      Transaction transaction, String currency, long transactionId);
 
   void deleteTransaction(User user, long transactionId);
 

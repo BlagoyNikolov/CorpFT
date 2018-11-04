@@ -70,7 +70,6 @@ public class AccountServiceImpl implements AccountService {
   }
 
   public Set<Account> getAllAccounts() {
-    //        return accountRepository.findByUser(user);
     List<Account> accountList = accountRepository.findAll();
     Set<Account> accountSet = new HashSet<>();
     accountSet.addAll(accountList);
@@ -105,9 +104,6 @@ public class AccountServiceImpl implements AccountService {
     updateAccount(to);
 
     Category transferCategory = categoryService.getCategoryByCategoryName(TRANSFER);
-//    Transaction t1 = new Transaction(PaymentType.EXPENSE, LocalDateTime.now(), amount, from, transferCategory, user, from.getCurrency());
-//    t1.setDescription(TRANSFER_TO_ACCOUNT + to.getName());
-//    t1.setInsertedBy(user.getFirstName() + " " + user.getLastName());
     Transaction t1 = new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.EXPENSE)
         .setDate(LocalDateTime.now())
@@ -115,14 +111,13 @@ public class AccountServiceImpl implements AccountService {
         .setAccountAmount(amount)
         .setAccount(from)
         .setCategory(transferCategory)
+        .setCategoryName(transferCategory.getName())
         .setUser(user)
         .setCurrency(from.getCurrency())
+        .setAccountCurrency(from.getCurrency())
         .setDescription(TRANSFER_TO_ACCOUNT + to.getName())
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())
         .build();
-//    Transaction t2 = new Transaction(PaymentType.INCOME, LocalDateTime.now(), amount, to, transferCategory, user, to.getCurrency());
-//    t2.setDescription(TRANSFER_FROM_ACCOUNT + from.getName());
-//    t2.setInsertedBy(user.getFirstName() + " " + user.getLastName());
     Transaction t2 = new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.INCOME)
         .setDate(LocalDateTime.now())
@@ -130,14 +125,16 @@ public class AccountServiceImpl implements AccountService {
         .setAccountAmount(convertedAmount)
         .setAccount(to)
         .setCategory(transferCategory)
+        .setCategoryName(transferCategory.getName())
         .setUser(user)
         .setCurrency(to.getCurrency())
-        .setDescription(TRANSFER_TO_ACCOUNT + from.getName())
+        .setAccountCurrency(to.getCurrency())
+        .setDescription(TRANSFER_FROM_ACCOUNT + from.getName())
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())
         .build();
 
-    transactionService.insertTransactionAndBudgetCheck(t1);
-    transactionService.insertTransactionAndBudgetCheck(t2);
+    transactionService.insertTransactionAndAddtoBudget(t1);
+    transactionService.insertTransactionAndAddtoBudget(t2);
   }
 
   public BigDecimal getAmountByAccountId(long accountId) {

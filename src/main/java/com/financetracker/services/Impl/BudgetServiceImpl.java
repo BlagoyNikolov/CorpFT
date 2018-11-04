@@ -140,7 +140,7 @@ public class BudgetServiceImpl implements BudgetService {
     return false;
   }
 
-  public Map<Budget, BigDecimal> getBudgets(User user) {
+  public Map<Budget, BigDecimal> getBudgets() {
     Set<Budget> budgets = null;
     BigDecimal percent = new BigDecimal(0.0);
 
@@ -151,7 +151,7 @@ public class BudgetServiceImpl implements BudgetService {
       return b2.getFromDate().compareTo(b1.getFromDate());
     });
 
-    budgets = getAllBudgetsByUser(user);
+    budgets = getAllBudgets();
     for (Budget budget : budgets) {
       percent = budget.getAmount().divide(budget.getInitialAmount(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
       map.put(budget, percent);
@@ -190,8 +190,7 @@ public class BudgetServiceImpl implements BudgetService {
     return !date.isBefore(from) && !date.isAfter(to);
   }
 
-  public Set<Budget> getAllBudgetsByUser(User user) {
-    //        return budgetRepository.findByAccountUser(user);
+  private Set<Budget> getAllBudgets() {
     List<Budget> budgetList = budgetRepository.findAll();
     Set<Budget> budgetSet = new HashSet<>();
     budgetSet.addAll(budgetList);

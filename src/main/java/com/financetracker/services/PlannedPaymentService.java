@@ -15,9 +15,9 @@ public interface PlannedPaymentService {
 
   PlannedPayment getPlannedPaymentByPlannedPaymentId(long plannedPaymentId);
 
-  List<PlannedPayment> getAllPlannedPaymentsByUser(User user);
+  List<PlannedPayment> getAllPlannedPayments();
 
-  List<PlannedPayment> getPagingPlannedPayments(User user, int page);
+  List<PlannedPayment> getPagingPlannedPayments(int page);
 
   void addPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime newDate, String amount,
                          String currencyId, PlannedPayment plannedPayment);

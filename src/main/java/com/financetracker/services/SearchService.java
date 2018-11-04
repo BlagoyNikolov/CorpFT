@@ -18,7 +18,7 @@ public interface SearchService {
 
   Set<PlannedPayment> getAllPlannedPaymentsByKeyword(String keyword);
 
-  Map<Budget, BigDecimal> getAllBudgetsByKeywordAndUser(String keyword, User user);
+  Map<Budget, BigDecimal> getAllBudgetsByKeyword(String keyword);
 
   boolean isKeywordValid(String keyword);
 }

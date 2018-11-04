@@ -50,15 +50,13 @@ public class BudgetController {
 
   @RequestMapping(value = "/budgets", method = RequestMethod.GET)
   public String getAllBudgets(HttpSession session, Model model) {
-    User user = (User) session.getAttribute(USER);
-    Map<Budget, BigDecimal> map = budgetService.getBudgets(user);
+    Map<Budget, BigDecimal> map = budgetService.getBudgets();
     model.addAttribute(BUDGETS, map);
     return "budgets";
   }
 
   @RequestMapping(value = "/addBudget", method = RequestMethod.GET)
   public String getAddBudget(HttpSession session, Model model) {
-//    User user = (User) session.getAttribute(USER);
     Set<Account> accounts = accountService.getAllAccounts();
     Set<Category> categories = categoryService.getAllCategoriesByType(PaymentType.EXPENSE);
 
@@ -72,7 +70,7 @@ public class BudgetController {
   @RequestMapping(value = "/addBudget", method = RequestMethod.POST)
   public String postAddBudget(HttpServletRequest request, HttpSession session, Model model,
                               @Valid @ModelAttribute("budget") Budget budget, BindingResult bindingResult) {
-    User user = (User) session.getAttribute("user");
+    User user = (User) session.getAttribute(USER);
 
     budget.setAmount(BigDecimal.valueOf(0));
     String amountString = request.getParameter(INITIAL_AMOUNT);

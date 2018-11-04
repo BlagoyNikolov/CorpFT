@@ -76,7 +76,7 @@ public class TransactionController {
   }
 
   @RequestMapping(value = "/addTransaction", method = RequestMethod.POST)
-  public String postAddTransaction(HttpServletRequest request, Model model,
+  public String addTransaction(HttpServletRequest request, Model model,
                                    @Valid @ModelAttribute("transaction") Transaction transaction, BindingResult bindingResult) {
     String type = request.getParameter("type");
     String account = request.getParameter("account");
@@ -91,7 +91,7 @@ public class TransactionController {
     }
 
     User user = (User) request.getSession().getAttribute("user");
-    transactionService.postTransaction(user, account, category, type, LocalDateTime.now(), amount, transaction, 0, currency);
+    transactionService.addTransaction(user, account, category, type, LocalDateTime.now(), amount, transaction, currency);
     Account acc = accountService.getAccountByAccountName(account);
 
     return "redirect:/account/" + acc.getAccountId();
@@ -129,7 +129,7 @@ public class TransactionController {
   }
 
   @RequestMapping(value = "/transaction/editTransaction", method = RequestMethod.POST)
-  public String postEditTransaction(HttpServletRequest request, HttpSession session, Model model,
+  public String editTransaction(HttpServletRequest request, HttpSession session, Model model,
                                     @Valid @ModelAttribute("transaction") Transaction transaction, BindingResult bindingResult) {
     String type = request.getParameter("type");
     String account = request.getParameter("account");
@@ -156,7 +156,7 @@ public class TransactionController {
 
     LocalDateTime newDate = DateConverters.convertFromStringToLocalDateTime(date);
     User user = (User) session.getAttribute("user");
-    transactionService.postTransaction(user, account, category, type, newDate, amount, transaction, transactionId, currency);
+    transactionService.editTransaction(user, account, category, type, newDate, amount, transaction, currency, transactionId);
     Account acc = accountService.getAccountByAccountName(account);
 
     return "redirect:/account/" + acc.getAccountId();
@@ -215,9 +215,6 @@ public class TransactionController {
     String accountName = accountService.getAccountNameByAccountId(accountId);
     BigDecimal accountBalance = accountService.getAmountByAccountId(accountId);
     String balance = NumberFormat.getCurrencyInstance(Locale.US).format(accountBalance);
-    //        Set<Account> accounts = accountService.getAllAccounts();
-
-    //        entities.addAttribute("accounts", accounts);
     model.addAttribute("accountName", accountName);
     model.addAttribute("balance", balance);
     model.addAttribute("pagedTransactions", transactionsPaged);

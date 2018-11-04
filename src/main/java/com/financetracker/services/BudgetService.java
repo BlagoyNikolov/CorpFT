@@ -35,15 +35,13 @@ public interface BudgetService {
 
   boolean existsBudget(LocalDateTime date, Category category, Account account);
 
-  Map<Budget, BigDecimal> getBudgets(User user);
+  Map<Budget, BigDecimal> getBudgets();
 
   TreeSet<Transaction> getBudgetTransactions(Long budgetId);
 
   Set<Budget> getAllBudgetsByDateCategoryAndAccount(LocalDateTime date, Category category, Account account);
 
   boolean isBetweenTwoDates(LocalDateTime date, LocalDateTime from, LocalDateTime to);
-
-  Set<Budget> getAllBudgetsByUser(User user);
 
   Budget getBudgetByBudgetId(long budgetId);
 

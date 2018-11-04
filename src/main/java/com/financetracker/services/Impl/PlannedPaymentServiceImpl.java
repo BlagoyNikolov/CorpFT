@@ -44,20 +44,20 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
   public void addPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
                                 String currencyId, PlannedPayment plannedPayment) {
 
-    PlannedPayment payment = generatePlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
+    PlannedPayment payment = createPlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
     plannedPaymentRepository.save(payment);
   }
 
   public void editPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date, String amount,
                                  String currencyId, PlannedPayment plannedPayment, Long plannedPaymentId) {
 
-    PlannedPayment payment = generatePlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
+    PlannedPayment payment = createPlannedPayment(user, account, category, name, type, date, amount, currencyId, plannedPayment);
     payment.setPlannedPaymentId(plannedPaymentId);
     plannedPaymentRepository.save(payment);
   }
 
-  private PlannedPayment generatePlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date,
-                                                String amount, String currencyId, PlannedPayment plannedPayment) {
+  private PlannedPayment createPlannedPayment(User user, String account, String category, String name, String type, LocalDateTime date,
+                                              String amount, String currencyId, PlannedPayment plannedPayment) {
 
     Account acc = accountService.getAccountByAccountName(account);
     Category cat = categoryService.getCategoryByCategoryName(category);
@@ -74,7 +74,9 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
         .setCategory(cat)
         .setUser(user)
         .setCurrency(currency)
+        .setAccountCurrency(acc.getCurrency())
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+        .setCategoryName(cat.getName())
         .build();
   }
 
@@ -82,8 +84,7 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     return plannedPaymentRepository.findByPlannedPaymentId(plannedPaymentId);
   }
 
-  public List<PlannedPayment> getAllPlannedPaymentsByUser(User user) {
-    //        return plannedPaymentRepository.findByAccountUser(user);
+  public List<PlannedPayment> getAllPlannedPayments() {
     return plannedPaymentRepository.findAll();
   }
 
@@ -113,7 +114,7 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
       accountService.updateAccount(acc);
       transaction = createTransactionByPlannedPayment(PaymentType.INCOME, PLANNED_PAYMENT_INCOME, plannedPayment, null, plannedPayment.getAmount());
     }
-    transactionService.insertTransactionAndBudgetCheck(transaction);
+    transactionService.insertTransactionAndAddtoBudget(transaction);
     deletePlannedPayment(plannedPayment.getPlannedPaymentId());
   }
 
@@ -121,9 +122,9 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     plannedPaymentRepository.delete(plannedPaymentId);
   }
 
-  public TreeMap<Integer, List<PlannedPayment>> getPlannedPaymentsChunks(User user) {
+  public TreeMap<Integer, List<PlannedPayment>> getPlannedPaymentsChunks() {
     TreeMap<Integer, List<PlannedPayment>> result = new TreeMap<>();
-    List<PlannedPayment> plannedPayments = this.getAllPlannedPaymentsByUser(user);
+    List<PlannedPayment> plannedPayments = this.getAllPlannedPayments();
     plannedPayments.sort(new PlannedPaymentComparator());
 
     List<List<PlannedPayment>> chunks = PagingUtil.chunk(plannedPayments, 10);
@@ -137,8 +138,8 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
   }
 
   @Override
-  public List<PlannedPayment> getPagingPlannedPayments(User user, int page) {
-    TreeMap<Integer, List<PlannedPayment>> plannedPayments = getPlannedPaymentsChunks(user);
+  public List<PlannedPayment> getPagingPlannedPayments(int page) {
+    TreeMap<Integer, List<PlannedPayment>> plannedPayments = getPlannedPaymentsChunks();
     return plannedPayments.get(page);
   }
 
@@ -149,9 +150,12 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
         .setAmount(plannedPayment.getAmount())
         .setAccount(plannedPayment.getAccount())
         .setCategory(plannedPayment.getCategory())
+        .setCategoryName(plannedPayment.getAccount().getName())
         .setDate(LocalDateTime.now())
         .setUser(user)
+        .setInsertedBy("Inserted by system")
         .setCurrency(plannedPayment.getCurrency())
+        .setAccountCurrency(plannedPayment.getAccount().getCurrency())
         .setAccountAmount(accountAmount)
         .build();
   }

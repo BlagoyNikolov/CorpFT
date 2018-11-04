@@ -45,7 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public void postCategory(Category category) {
-    //    category.setUser(user);
     categoryRepository.save(category);
   }
 

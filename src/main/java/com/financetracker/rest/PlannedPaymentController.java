@@ -8,7 +8,6 @@ import com.financetracker.services.AccountService;
 import com.financetracker.services.CategoryService;
 import com.financetracker.services.CurrencyService;
 import com.financetracker.services.PlannedPaymentService;
-import com.financetracker.services.UserService;
 import com.financetracker.util.DateConverters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,17 +45,10 @@ public class PlannedPaymentController {
 
   @RequestMapping(value = "/plannedPayments", method = RequestMethod.GET)
   public String getAllPlannedPayments(HttpSession session, Model model) {
-    User user = (User) session.getAttribute("user");
-
-    //        Set<Category> allCategories = new HashSet<Category>();
     Set<Category> allCategories = categoryService.getAllCategories();
-    List<PlannedPayment> plannedPaymentsPaged = plannedPaymentService.getPagingPlannedPayments(user, 1);
-    List<PlannedPayment> plannedPayments = plannedPaymentService.getAllPlannedPaymentsByUser(user);
+    List<PlannedPayment> plannedPaymentsPaged = plannedPaymentService.getPagingPlannedPayments(1);
+    List<PlannedPayment> plannedPayments = plannedPaymentService.getAllPlannedPayments();
     int pages = (int) Math.ceil(plannedPayments.size() / (double) 10);
-    //        Set<Category> categories = categoryService.getAllCategoriesByUserId();
-    //        Set<Category> ownCategories = categoryService.getAllCategoriesByUserId(user.getUserId());
-    //        allCategories.addAll(categories);
-    //        allCategories.addAll(ownCategories);
     Set<Account> accounts = accountService.getAllAccounts();
 
     session.setAttribute("plannedPayments", plannedPayments);
@@ -189,25 +181,17 @@ public class PlannedPaymentController {
   }
 
   @RequestMapping(value = "/payment/deletePlannedPayment/{plannedPaymentId}", method = RequestMethod.POST)
-  public String deletePlannedPayment(@PathVariable("plannedPaymentId") Long plannedPaymentId, HttpSession session) {
-    User user = (User) session.getAttribute("user");
+  public String deletePlannedPayment(@PathVariable("plannedPaymentId") Long plannedPaymentId) {
     plannedPaymentService.deletePlannedPayment(plannedPaymentId);
-
     return "redirect:/plannedPayments";
   }
 
   @RequestMapping(value = "/plannedPayments/{page}", method = RequestMethod.GET)
-  public String plannedPaymentPaging(@PathVariable("page") int page, HttpSession session, HttpServletRequest request, Model model) {
-    User user = (User) session.getAttribute("user");
-    List<PlannedPayment> plannedPaymentsPaged = plannedPaymentService.getPagingPlannedPayments(user, page);
-    List<PlannedPayment> plannedPayments = plannedPaymentService.getAllPlannedPaymentsByUser(user);
+  public String plannedPaymentPaging(@PathVariable("page") int page, HttpServletRequest request, Model model) {
+    List<PlannedPayment> plannedPaymentsPaged = plannedPaymentService.getPagingPlannedPayments(page);
+    List<PlannedPayment> plannedPayments = plannedPaymentService.getAllPlannedPayments();
     int pages = (int) Math.ceil(plannedPayments.size() / (double) 10);
-    //        Set<Category> allCategories = new HashSet<Category>();
     Set<Category> allCategories = categoryService.getAllCategories();
-    //        Set<Category> categories = categoryService.getAllCategoriesByUserId();
-    //        Set<Category> ownCategories = categoryService.getAllCategoriesByUserId(user.getUserId());
-    //        allCategories.addAll(categories);
-    //        allCategories.addAll(ownCategories);
     Set<Account> accounts = accountService.getAllAccounts();
 
     request.getSession().setAttribute("plannedPayments", plannedPayments);

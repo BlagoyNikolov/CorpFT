@@ -67,10 +67,15 @@ public class PlannedPayment {
   @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
   private Currency currency;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "account_currency", referencedColumnName = "currency_id")
+  private Currency accountCurrency;
+
   @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private User user;
 
+  @Column(name = "category_name")
   private String categoryName;
 
   @Column(name = "inserted_by")
@@ -143,6 +148,14 @@ public class PlannedPayment {
     this.currency = currency;
   }
 
+  public Currency getAccountCurrency() {
+    return accountCurrency;
+  }
+
+  public void setAccountCurrency(Currency accountCurrency) {
+    this.accountCurrency = accountCurrency;
+  }
+
   public User getUser() {
     return user;
   }
@@ -175,7 +188,9 @@ public class PlannedPayment {
     private String description;
     private Account account;
     private Category category;
+    private String categoryName;
     private Currency currency;
+    private Currency accountCurrency;
     private User user;
     private String insertedBy;
     private BigDecimal accountAmount;
@@ -218,8 +233,18 @@ public class PlannedPayment {
       return this;
     }
 
+    public PlannedPaymentBuilder setCategoryName(String categoryName) {
+      this.categoryName = categoryName;
+      return this;
+    }
+
     public PlannedPaymentBuilder setCurrency(Currency currency) {
       this.currency = currency;
+      return this;
+    }
+
+    public PlannedPaymentBuilder setAccountCurrency(Currency accountCurrency) {
+      this.accountCurrency = accountCurrency;
       return this;
     }
 
@@ -247,7 +272,9 @@ public class PlannedPayment {
       plannedPayment.description = this.description;
       plannedPayment.account = this.account;
       plannedPayment.category = this.category;
+      plannedPayment.categoryName = this.categoryName;
       plannedPayment.currency = this.currency;
+      plannedPayment.accountCurrency = this.accountCurrency;
       plannedPayment.user = this.user;
       plannedPayment.insertedBy = this.insertedBy;
       plannedPayment.accountAmount = this.accountAmount;
