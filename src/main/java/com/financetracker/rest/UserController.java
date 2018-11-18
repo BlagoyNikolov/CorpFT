@@ -2,6 +2,7 @@ package com.financetracker.rest;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.User;
+import com.financetracker.services.AccountService;
 import com.financetracker.services.ChartService;
 import com.financetracker.services.UserService;
 import com.financetracker.util.EmailSender;
@@ -45,6 +46,9 @@ public class UserController {
 
   @Autowired
   private ChartService chartService;
+
+  @Autowired
+  private AccountService accountService;
 
   @GetMapping("/")
   public String home() {
@@ -110,8 +114,9 @@ public class UserController {
     User user = (User) session.getAttribute("user");
     TreeSet<Account> accounts = chartService.getAllAccounts(user);
     BigDecimal allBalance = chartService.calculateAllBalance(accounts);
+    BigDecimal allAccountsBalance = accountService.calculateAllAccountBalance();
     Map<LocalDate, BigDecimal> finalDefaultTransactions = chartService.getGraphData(user, allBalance);
-    String balance = NumberFormat.getCurrencyInstance(Locale.US).format(allBalance);
+    String balance = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(allAccountsBalance);
     viewModel.addAttribute("accounts", accounts);
     viewModel.addAttribute("balance", balance);
     viewModel.addAttribute("defaultTransactions", finalDefaultTransactions);

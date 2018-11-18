@@ -133,8 +133,8 @@ public class AccountServiceImpl implements AccountService {
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())
         .build();
 
-    transactionService.insertTransactionAndAddtoBudget(t1);
-    transactionService.insertTransactionAndAddtoBudget(t2);
+    transactionService.insertTransaction(t1);
+    transactionService.insertTransaction(t2);
   }
 
   public BigDecimal getAmountByAccountId(long accountId) {
@@ -169,6 +169,20 @@ public class AccountServiceImpl implements AccountService {
     Locale currencyLocale = determineCurrencyLocale(accountId);
     String balance = NumberFormat.getCurrencyInstance(currencyLocale).format(accountBalance);
     return accountBalance.signum() == -1 ? ("-" + balance) : balance;
+  }
+
+  @Override
+  public BigDecimal calculateAllAccountBalance() {
+    return accountRepository
+        .findAll()
+        .stream()
+        .map(account -> calculateAccountAmount(account))
+        .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+  }
+
+  private BigDecimal calculateAccountAmount(Account account) {
+    Currency euro = currencyService.getCurrencyByCurrencyName("EUR");
+    return  currencyService.convertToAccountCurrency(account.getCurrency(), euro, account.getAmount());
   }
 
   private Locale determineCurrencyLocale(Long accountId) {

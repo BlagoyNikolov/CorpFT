@@ -26,6 +26,4 @@ public interface UserService {
   boolean existUserByPasswordToken(String token);
 
   User getUserByPasswordToken(String token);
-
-  User getUserByUserId(long userId);
 }

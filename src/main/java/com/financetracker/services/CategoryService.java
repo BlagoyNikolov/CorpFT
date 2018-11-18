@@ -14,8 +14,6 @@ public interface CategoryService {
 
   Category getCategoryByCategoryId(long categoryId);
 
-  //    Set<Category> getAllCategoriesByUserId(Long... userIdParam);
-
   Category getCategoryByCategoryName(String categoryName);
 
   Set<Category> getAllCategoriesByType(PaymentType type);

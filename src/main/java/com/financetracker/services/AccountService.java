@@ -37,4 +37,6 @@ public interface AccountService {
   Optional<Account> getExistingAccount(String name);
 
   String setAccountBalance(Long accountId);
+
+  BigDecimal calculateAllAccountBalance();
 }

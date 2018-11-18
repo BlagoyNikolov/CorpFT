@@ -32,37 +32,7 @@ public class BudgetServiceImpl implements BudgetService {
   @Autowired
   private CategoryService categoryService;
 
-  public List<Budget> getAllBudgetsByAccount(Account account) {
-    return budgetRepository.findByAccount(account);
-  }
-
-  public List<Budget> getAllBudgetsByCategory(Category category) {
-    return budgetRepository.findByCategory(category);
-  }
-
-  public void insertBudget(Budget budget) {
-    boolean exits = transactionService.existsTransaction(budget);
-    if (exits) {
-      Set<Transaction> transactions = transactionService.getAllTransactionsForBudget(budget);
-
-      BigDecimal amount = transactions
-          .stream()
-          .map(tr -> tr.getAmount())
-          .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
-
-      budget.setAmount(amount);
-      budget.setTransactions(transactions);
-      budgetRepository.save(budget);
-      return;
-    }
-    budgetRepository.save(budget);
-  }
-
-  public void updateBudget(Budget budget) {
-    budgetRepository.save(budget);
-  }
-
-  public void postBudget(Budget budget, User user, Account account, Category category, String date) {
+  public void addBudget(Budget budget, User user, Account account, Category category, String date) {
     String[] inputDate = date.split("/");
     int monthFrom = Integer.valueOf(inputDate[0]);
     int dayOfMonthFrom = Integer.valueOf(inputDate[1]);
@@ -80,24 +50,54 @@ public class BudgetServiceImpl implements BudgetService {
     budget.setToDate(dateTo);
     budget.setAccount(account);
     budget.setCategory(category);
+    budget.setCurrency(account.getCurrency());
+    budget.setInsertedBy(user.getFirstName() + " " + user.getLastName());
 
     insertBudget(budget);
   }
 
-  public void postEditBudget(Long budgetId, Budget budget, User user, Budget oldBudget, Account acc,
+  private void insertBudget(Budget budget) {
+    boolean exits = transactionService.existsTransaction(budget);
+    if (exits) {
+      Set<Transaction> transactions = transactionService.getAllTransactionsForBudget(budget);
+
+      BigDecimal amount = transactions
+          .stream()
+          .map(tr -> tr.getAccountAmount())
+          .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+
+      budget.setAmount(amount);
+      budget.setTransactions(transactions);
+      budgetRepository.save(budget);
+      return;
+    }
+    budgetRepository.save(budget);
+  }
+
+  public void updateBudget(Budget budget) {
+    budgetRepository.save(budget);
+  }
+
+  public void postEditBudget(Long budgetId, Budget budget, User user, Budget oldBudget, Account account,
                              Category category, String date) {
     LocalDateTime[] dateRange = DateConverters.dateRange(date);
 
-    Budget newBudget = new Budget(budget.getName(), budget.getInitialAmount(),
-        dateRange[0], dateRange[1], acc, category);
-    newBudget.setBudgetId(budgetId);
+    Budget newBudget = new Budget.BudgetBuilder()
+      .setBudgetId(budgetId)
+      .setName(budget.getName())
+      .setInitialAmount(budget.getInitialAmount())
+      .setFromDate(dateRange[0])
+      .setToDate(dateRange[1])
+      .setAccount(account)
+      .setCategory(category)
+      .build();
 
-    boolean exist = newBudget.getCategory().getCategoryId() != oldBudget.getCategory().getCategoryId()
+    boolean existsBudget = newBudget.getCategory().getCategoryId() != oldBudget.getCategory().getCategoryId()
         || newBudget.getAccount().getAccountId() != oldBudget.getAccount().getAccountId()
         || newBudget.getFromDate() != oldBudget.getFromDate()
         || newBudget.getToDate() != oldBudget.getToDate();
 
-    if (exist) {
+    if (existsBudget) {
       transferTransactions(newBudget);
     }
   }
@@ -128,16 +128,6 @@ public class BudgetServiceImpl implements BudgetService {
 
   public void deleteBudget(Budget budget) {
     budgetRepository.delete(budget);
-  }
-
-  public boolean existsBudget(LocalDateTime date, Category category, Account account) {
-    Set<Budget> budgets = budgetRepository.findByCategoryAndAccount(category, account);
-    for (Budget budget : budgets) {
-      if (isBetweenTwoDates(date, budget.getFromDate(), budget.getToDate())) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public Map<Budget, BigDecimal> getBudgets() {
@@ -223,6 +213,4 @@ public class BudgetServiceImpl implements BudgetService {
     TreeMap<Integer, List<Transaction>> transactions = getAccountTransactionChunks(budgetId, page);
     return transactions.get(page);
   }
-
-
 }

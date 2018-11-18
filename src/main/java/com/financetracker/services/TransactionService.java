@@ -20,7 +20,7 @@ public interface TransactionService {
 
   Transaction getTransactionByTransactionId(long transactionId);
 
-  void insertTransactionAndAddtoBudget(Transaction transaction);
+  void insertTransaction(Transaction transaction);
 
   void addTransaction(User user, String account, String category, String type, LocalDateTime date, String amount,
                        Transaction transaction, String currency);

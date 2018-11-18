@@ -68,7 +68,7 @@ public class BudgetController {
   }
 
   @RequestMapping(value = "/addBudget", method = RequestMethod.POST)
-  public String postAddBudget(HttpServletRequest request, HttpSession session, Model model,
+  public String addBudget(HttpServletRequest request, HttpSession session, Model model,
                               @Valid @ModelAttribute("budget") Budget budget, BindingResult bindingResult) {
     User user = (User) session.getAttribute(USER);
 
@@ -81,7 +81,7 @@ public class BudgetController {
     Category category = categoryService.getCategoryByCategoryName(request.getParameter(CATEGORY));
     String date = request.getParameter(DATE);
 
-    budgetService.postBudget(budget, user, account, category, date);
+    budgetService.addBudget(budget, user, account, category, date);
     session.setAttribute("link", "addBudget");
 
     return "redirect:/budgets";
@@ -116,7 +116,7 @@ public class BudgetController {
   }
 
   @RequestMapping(value = "/budgets/{budgetId}/editBudget", method = RequestMethod.POST)
-  public String postEditBudget(HttpSession session, HttpServletRequest request, @PathVariable("budgetId") Long budgetId,
+  public String editBudget(HttpSession session, HttpServletRequest request, @PathVariable("budgetId") Long budgetId,
                                @Valid @ModelAttribute("newBudget") Budget budget) {
     budget.setAmount(BigDecimal.valueOf(0));
 

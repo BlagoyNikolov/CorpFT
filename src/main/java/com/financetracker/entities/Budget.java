@@ -64,6 +64,13 @@ public class Budget {
   @JoinColumn(name = "category_id", referencedColumnName = "category_id")
   private Category category;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
+  @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
+  private Currency currency;
+
+  @Column(name = "inserted_by")
+  private String insertedBy;
+
   @ManyToMany
   @JoinTable(
       name = "budgets_has_transactions",
@@ -73,42 +80,6 @@ public class Budget {
   private Set<Transaction> transactions = new HashSet<Transaction>();
 
   public Budget() {
-  }
-
-  public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
-                LocalDateTime toDate, Account account, Category category, Set<Transaction> transactions) {
-    this(name, initialAmount, amount, fromDate, toDate, account, category, transactions);
-
-    this.budgetId = budgetId;
-  }
-
-  public Budget(long budgetId, String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
-                Account account, Category category) {
-    this(budgetId, name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
-  }
-
-  public Budget(String name, BigDecimal initialAmount, LocalDateTime fromDate, LocalDateTime toDate,
-                Account account, Category category) {
-    this(name, initialAmount, BigDecimal.valueOf(0), fromDate, toDate, account, category, new HashSet<>());
-  }
-
-  public Budget(long budgetId, String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate,
-                LocalDateTime toDate, Account account, Category category) {
-    this(name, initialAmount, amount, fromDate, toDate, account, category, new HashSet<>());
-
-    this.budgetId = budgetId;
-  }
-
-  public Budget(String name, BigDecimal initialAmount, BigDecimal amount, LocalDateTime fromDate, LocalDateTime toDate,
-                Account account, Category category, Set<Transaction> transactions) {
-    this.name = name;
-    this.initialAmount = initialAmount;
-    this.amount = amount;
-    this.fromDate = fromDate;
-    this.toDate = toDate;
-    this.account = account;
-    this.category = category;
-    this.transactions = transactions;
   }
 
   public long getBudgetId() {
@@ -175,6 +146,22 @@ public class Budget {
     this.category = category;
   }
 
+  public Currency getCurrency() {
+    return currency;
+  }
+
+  public void setCurrency(Currency currency) {
+    this.currency = currency;
+  }
+
+  public String getInsertedBy() {
+    return insertedBy;
+  }
+
+  public void setInsertedBy(String insertedBy) {
+    this.insertedBy = insertedBy;
+  }
+
   public Set<Transaction> getTransactions() {
     return Collections.unmodifiableSet(transactions);
   }
@@ -189,5 +176,86 @@ public class Budget {
 
   public void removeTransactions() {
     this.transactions.clear();
+  }
+
+  public static class BudgetBuilder {
+    private long budgetId;
+    private String name;
+    private BigDecimal initialAmount;
+    private BigDecimal amount;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
+    private Account account;
+    private Category category;
+    private Currency currency;
+    private String insertedBy;
+
+    public BudgetBuilder() {
+    }
+
+    public BudgetBuilder setBudgetId(long budgetId) {
+      this.budgetId = budgetId;
+      return this;
+    }
+
+    public BudgetBuilder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public BudgetBuilder setInitialAmount(BigDecimal initialAmount) {
+      this.initialAmount = initialAmount;
+      return this;
+    }
+
+    public BudgetBuilder setAmount(BigDecimal amount) {
+      this.amount = amount;
+      return this;
+    }
+
+    public BudgetBuilder setFromDate(LocalDateTime fromDate) {
+      this.fromDate = fromDate;
+      return this;
+    }
+
+    public BudgetBuilder setToDate(LocalDateTime toDate) {
+      this.toDate = toDate;
+      return this;
+    }
+
+    public BudgetBuilder setAccount(Account account) {
+      this.account = account;
+      return this;
+    }
+
+    public BudgetBuilder setCategory(Category category) {
+      this.category = category;
+      return this;
+    }
+
+    public BudgetBuilder setCurrency(Currency currency) {
+      this.currency = currency;
+      return this;
+    }
+
+    public BudgetBuilder setInsertedBy(String insertedBy) {
+      this.insertedBy = insertedBy;
+      return this;
+    }
+
+    public Budget build() {
+      Budget budget = new Budget();
+      budget.budgetId = this.budgetId;
+      budget.name = this.name;
+      budget.initialAmount = this.initialAmount;
+      budget.amount = this.amount;
+      budget.fromDate = this.fromDate;
+      budget.toDate = this.toDate;
+      budget.account = this.account;
+      budget.category = this.category;
+      budget.currency = this.currency;
+      budget.insertedBy = this.insertedBy;
+      return budget;
+    }
   }
 }

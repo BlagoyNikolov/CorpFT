@@ -142,7 +142,7 @@ public class ChartServiceImpl implements ChartService {
     return result;
   }
 
-  public Map<String, BigDecimal> getFileteredIncomeVsExpenses(User user, long accountId, LocalDateTime from, LocalDateTime to) {
+  public Map<String, BigDecimal> getFilteredIncomeVsExpenses(User user, long accountId, LocalDateTime from, LocalDateTime to) {
     Map<String, BigDecimal> result = new HashMap<>();
     result.put(INCOME, BigDecimal.valueOf(0));
     result.put(EXPENSE, BigDecimal.valueOf(0));

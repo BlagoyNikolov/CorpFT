@@ -114,7 +114,7 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
       accountService.updateAccount(acc);
       transaction = createTransactionByPlannedPayment(PaymentType.INCOME, PLANNED_PAYMENT_INCOME, plannedPayment, null, plannedPayment.getAmount());
     }
-    transactionService.insertTransactionAndAddtoBudget(transaction);
+    transactionService.insertTransaction(transaction);
     deletePlannedPayment(plannedPayment.getPlannedPaymentId());
   }
 

@@ -31,6 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
 
   public static final String INCOME = "INCOME";
   public static final String EXPENSE = "EXPENSE";
+  public static final String DEPOSIT = "DEPOSIT";
 
   @Autowired
   private TransactionRepository transactionRepository;
@@ -80,23 +81,22 @@ public class TransactionServiceImpl implements TransactionService {
     BigDecimal convertedValue = currencyService.convertToAccountCurrency(persistedCurrency, persistedAccount.getCurrency(), transaction.getAmount());
     String categoryName = categoryService.getCategoryNameByCategoryId(persistedCategory.getCategoryId());
     return new Transaction.TransactionBuilder()
-        .setPaymentType(PaymentType.valueOf(type))
-        .setDescription(transaction.getDescription())
-        .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
-        .setAccount(persistedAccount)
-        .setCategory(persistedCategory)
-        .setDate(date)
-        .setUser(user)
-        .setCurrency(transaction.getCurrency())
-        .setAccountCurrency(persistedAccount.getCurrency())
-        .setAccountAmount(convertedValue)
-        .setCategoryName(categoryName)
-        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
-        .build();
+      .setPaymentType(PaymentType.valueOf(type))
+      .setDescription(transaction.getDescription())
+      .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
+      .setAccount(persistedAccount)
+      .setCategory(persistedCategory)
+      .setDate(date)
+      .setUser(user)
+      .setCurrency(transaction.getCurrency())
+      .setAccountCurrency(persistedAccount.getCurrency())
+      .setAccountAmount(convertedValue)
+      .setCategoryName(categoryName)
+      .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+      .build();
   }
 
-  private void insertNewTransaction(String type, Account acc, Transaction newTransaction, BigDecimal convertedValue) {
-    BigDecimal newValue = convertedValue;
+  private void insertNewTransaction(String type, Account acc, Transaction newTransaction, BigDecimal newValue) {
     BigDecimal oldValue = accountService.getAmountByAccountId(newTransaction.getAccount().getAccountId());
     if (type.equals(EXPENSE)) {
       acc.setAmount(oldValue.subtract(newValue));
@@ -105,69 +105,79 @@ public class TransactionServiceImpl implements TransactionService {
       acc.setAmount(oldValue.add(newValue));
       accountService.updateAccount(acc);
     }
-    insertTransactionAndAddtoBudget(newTransaction);
+    insertTransaction(newTransaction);
   }
 
-  private void updateExistingTransaction(long transactionId, Account acc, Transaction newTransaction, BigDecimal convertedValue) {
-    BigDecimal newValue = convertedValue;
+  private void updateExistingTransaction(long transactionId, Account acc, Transaction newTransaction, BigDecimal newValue) {
     BigDecimal oldValue = accountService.getAmountByAccountId(newTransaction.getAccount().getAccountId());
-    Transaction oldTransaction = getTransactionByTransactionId(transactionId);
-    if (oldTransaction.getType().equals(PaymentType.EXPENSE)) {
-      acc.setAmount(oldValue.add(oldTransaction.getAmount()));
+    Transaction existingTransaction = getTransactionByTransactionId(transactionId);
+    if (existingTransaction.getType().equals(PaymentType.EXPENSE)) {
+      acc.setAmount(oldValue.add(existingTransaction.getAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).subtract(newValue));
       accountService.updateAccount(acc);
-    } else if (oldTransaction.getType().equals(PaymentType.INCOME)) {
-      acc.setAmount(oldValue.subtract(oldTransaction.getAmount()));
+    } else if (existingTransaction.getType().equals(PaymentType.INCOME)) {
+      acc.setAmount(oldValue.subtract(existingTransaction.getAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).add(newValue));
       accountService.updateAccount(acc);
     }
     updateTransaction(newTransaction);
   }
 
-  public void insertTransactionAndAddtoBudget(Transaction transaction) {
-    Set<Budget> budgets = budgetService.getAllBudgetsByDateCategoryAndAccount(transaction.getDate(),
-        transaction.getCategory(), transaction.getAccount());
+  public void insertTransaction(Transaction transaction) {
     transactionRepository.save(transaction);
-
-    if (budgets.size() != 0 && transaction.getType().equals(PaymentType.EXPENSE)) {
-      for (Budget budget : budgets) {
-        budget.addTransaction(transaction);
-        budget.setAmount(budget.getAmount().add(transaction.getAmount()));
-        budgetService.updateBudget(budget);
-      }
-    }
+    addTransactionToExistingBudgets(transaction);
   }
 
   private void updateTransaction(Transaction transaction) {
     transactionRepository.save(transaction);
   }
 
+  private void addTransactionToExistingBudgets(Transaction transaction) {
+    Set<Budget> budgets = budgetService.getAllBudgetsByDateCategoryAndAccount(transaction.getDate(),
+        transaction.getCategory(), transaction.getAccount());
+
+    if (budgets.size() != 0 && PaymentType.EXPENSE.equals(transaction.getType())) {
+      for (Budget budget : budgets) {
+        budget.addTransaction(transaction);
+        budget.setAmount(budget.getAmount().add(transaction.getAccountAmount()));
+        budgetService.updateBudget(budget);
+      }
+    }
+  }
+
   @Transactional
   public void deleteTransaction(User user, long transactionId) {
     Transaction transaction = this.getTransactionByTransactionId(transactionId);
-    Account account = accountService.getAccountByAccountId(transaction.getAccount().getAccountId());
-
-    BigDecimal newValue = transaction.getAmount();
-    BigDecimal oldValue = accountService.getAmountByAccountId(transaction.getAccount().getAccountId());
-
-    if (transaction.getType().equals(PaymentType.EXPENSE)) {
-      account.setAmount(oldValue.add(newValue));
-      accountService.updateAccount(account);
-    } else if (transaction.getType().equals(PaymentType.INCOME)) {
-      account.setAmount(oldValue.subtract(newValue));
-      accountService.updateAccount(account);
-    }
-
     Set<Budget> budgets = budgetService.getAllBudgetsByDateCategoryAndAccount(transaction.getDate(),
         transaction.getCategory(), transaction.getAccount());
-    transactionRepository.delete(transaction);
-
     if (budgets.size() != 0 && transaction.getType().equals(PaymentType.EXPENSE)) {
       for (Budget budget : budgets) {
         budget.setAmount(budget.getAmount().subtract(transaction.getAmount()));
         budgetService.updateBudget(budget);
       }
     }
+    transactionRepository.delete(transaction);
+  }
+
+  public void insertTransaction(User user, Account account) {
+    Account acc = accountService.getAccountByAccountName(account.getName());
+    Category cat = categoryService.getCategoryByCategoryName(DEPOSIT);
+    String description = String.format("Deposit in %s", acc.getName());
+    Transaction trn = new Transaction.TransactionBuilder()
+      .setPaymentType(PaymentType.INCOME)
+      .setDescription(description)
+      .setAmount(acc.getAmount())
+      .setAccount(acc)
+      .setCategory(cat)
+      .setDate(LocalDateTime.now())
+      .setUser(user)
+      .setCurrency(account.getCurrency())
+      .setAccountCurrency(account.getCurrency())
+      .setAccountAmount(acc.getAmount())
+      .setInsertedBy(user.getFirstName() + " " + user.getLastName())
+      .setCategoryName(cat.getName())
+      .build();
+    transactionRepository.save(trn);
   }
 
   public boolean existsTransaction(Budget budget) {
@@ -178,18 +188,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     List<Transaction> transactions = transactionRepository.findByCategoryAndAccount(category, account);
     for (Transaction transaction : transactions) {
-      PaymentType type = transaction.getType();
-      LocalDateTime date = transaction.getDate();
-
-      if (type.equals(PaymentType.EXPENSE) && isBetweenTwoDates(date, fromDate, toDate)) {
-        return true;
-      }
+      return PaymentType.EXPENSE.equals(transaction.getType()) && isBetweenTwoDates(transaction.getDate(), fromDate, toDate);
     }
     return false;
-  }
-
-  public boolean isBetweenTwoDates(LocalDateTime date, LocalDateTime from, LocalDateTime to) {
-    return !date.isBefore(from) && !date.isAfter(to);
   }
 
   public Set<Transaction> getAllTransactionsForBudget(Budget budget) {
@@ -198,18 +199,19 @@ public class TransactionServiceImpl implements TransactionService {
     Category category = budget.getCategory();
     Account account = budget.getAccount();
 
-    Set<Transaction> result = new HashSet<>();
     List<Transaction> transactions = transactionRepository.findByCategoryAndAccount(category, account);
+    Set<Transaction> result = new HashSet<>();
 
     for (Transaction transaction : transactions) {
-      PaymentType type = transaction.getType();
-      LocalDateTime date = transaction.getDate();
-
-      if (type.equals(PaymentType.EXPENSE) && isBetweenTwoDates(date, fromDate, toDate)) {
+      if (transaction.getType().equals(PaymentType.EXPENSE) && isBetweenTwoDates(transaction.getDate(), fromDate, toDate)) {
         result.add(transaction);
       }
     }
     return result;
+  }
+
+  public boolean isBetweenTwoDates(LocalDateTime date, LocalDateTime from, LocalDateTime to) {
+    return !date.isBefore(from) && !date.isAfter(to);
   }
 
   public TreeMap<Integer, List<Transaction>> getAccountTransactionChunks(Long accountId) {
@@ -230,27 +232,5 @@ public class TransactionServiceImpl implements TransactionService {
   public List<Transaction> getPagingTransactions(Long accountId, int page) {
     TreeMap<Integer, List<Transaction>> transactions = getAccountTransactionChunks(accountId);
     return transactions.get(page);
-  }
-
-  @Transactional
-  public void insertTransaction(User user, Account account) {
-    Account acc = accountService.getAccountByAccountName(account.getName());
-    Category cat = categoryService.getCategoryByCategoryName("DEPOSIT");
-    String description = String.format("Deposit in %s", acc.getName());
-    Transaction trn = new Transaction.TransactionBuilder()
-        .setPaymentType(PaymentType.INCOME)
-        .setDescription(description)
-        .setAmount(acc.getAmount())
-        .setAccount(acc)
-        .setCategory(cat)
-        .setDate(LocalDateTime.now())
-        .setUser(user)
-        .setCurrency(account.getCurrency())
-        .setAccountCurrency(account.getCurrency())
-        .setAccountAmount(acc.getAmount())
-        .setInsertedBy(user.getFirstName() + " " + user.getLastName())
-        .setCategoryName(cat.getName())
-        .build();
-    transactionRepository.save(trn);
   }
 }

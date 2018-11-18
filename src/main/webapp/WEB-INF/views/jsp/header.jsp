@@ -54,7 +54,7 @@
                                 <input type="text" class="form-control" placeholder="Search for info here..."
                                        name="keyword">
                                 <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-dark"><i
+                                    <button type="submit" class="btn"><i
                                             class="glyphicon glyphicon-search"></i></button>
                                 </span>
                             </div>

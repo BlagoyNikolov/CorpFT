@@ -62,7 +62,4 @@ public class UserServiceImpl implements UserService {
     return userRepository.findByPasswordToken(token);
   }
 
-  public User getUserByUserId(long userId) {
-    return userRepository.findOne(userId);
-  }
 }

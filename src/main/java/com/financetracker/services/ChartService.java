@@ -26,7 +26,7 @@ public interface ChartService {
 
   Map<String, BigDecimal> getIncomeVsExpenses(User user);
 
-  Map<String, BigDecimal> getFileteredIncomeVsExpenses(User user, long accountId, LocalDateTime from, LocalDateTime to);
+  Map<String, BigDecimal> getFilteredIncomeVsExpenses(User user, long accountId, LocalDateTime from, LocalDateTime to);
 
   Map<LocalDate, BigDecimal> getTransactionAmountAndDate(User user);
 

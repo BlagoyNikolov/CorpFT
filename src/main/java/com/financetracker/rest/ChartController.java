@@ -81,7 +81,7 @@ public class ChartController {
       accId = accountService.getAccountId(user, account);
     }
 
-    Map<String, BigDecimal> transactions = chartService.getFileteredIncomeVsExpenses(user, accId, dateRange[0], dateRange[1]);
+    Map<String, BigDecimal> transactions = chartService.getFilteredIncomeVsExpenses(user, accId, dateRange[0], dateRange[1]);
     model.addAttribute("transactions", transactions);
     model.addAttribute("date", date);
     model.addAttribute("accounts", accountService.getAllAccounts());

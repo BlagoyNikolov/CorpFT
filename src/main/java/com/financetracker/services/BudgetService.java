@@ -18,22 +18,14 @@ import java.util.TreeSet;
  */
 public interface BudgetService {
 
-  List<Budget> getAllBudgetsByAccount(Account account);
-
-  List<Budget> getAllBudgetsByCategory(Category category);
-
-  void insertBudget(Budget budget);
-
   void updateBudget(Budget budget);
 
-  void postBudget(Budget budget, User user, Account account, Category category, String date);
+  void addBudget(Budget budget, User user, Account account, Category category, String date);
 
   void postEditBudget(Long budgetId, Budget budget, User user, Budget oldBudget, Account acc,
                       Category category, String date);
 
   void deleteBudget(Budget budget);
-
-  boolean existsBudget(LocalDateTime date, Category category, Account account);
 
   Map<Budget, BigDecimal> getBudgets();
 
