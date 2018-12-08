@@ -47,9 +47,10 @@
                         <tr>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th>Position</th>
                             <th>Email</th>
                             <th>Username</th>
-                            <th>Admin Privileges</th>
+                            <th>Is Admin</th>
                             <th>Transactions</th>
                             <th>Planned Payments</th>
                             <th>Budgets</th>
@@ -65,6 +66,10 @@
                                 </td>
 
                                 <td>
+                                    <p style="font-size: 21px;"><c:out value="${user.position }"></c:out></p>
+                                </td>
+
+                                <td>
                                     <p style="font-size: 21px;"><c:out value="${user.email }"></c:out></p>
                                 </td>
 
@@ -72,7 +77,7 @@
                                     <p style="font-size: 21px;"><c:out value="${user.username }"></c:out></p>
                                 </td>
 
-                                <td width="10%">
+                                <td width="5%">
                                     <c:choose>
                                         <c:when test="${user.isAdmin eq true}">
                                             <p style="font-size: 21px;">
@@ -87,19 +92,19 @@
                                     </c:choose>
                                 </td>
 
-                                <td width="10%">
+                                <td width="5%">
                                     <a href="/employees/transactions/${user.userId}">
                                         <i class="fa fa-bar-chart" style="font-size: 21px;"></i>
                                     </a>
                                 </td>
 
-                                <td width="10%">
+                                <td width="5%">
                                     <a href="/employees/plannedPayments/${user.userId}">
                                         <i class="fa fa-calendar-check-o" style="font-size: 21px;"></i>
                                     </a>
                                 </td>
 
-                                <td width="10%">
+                                <td width="5%">
                                     <a href="/employees/budgets/${user.userId}">
                                         <i class="fa fa fa-money" style="font-size: 21px;"></i>
                                     </a>

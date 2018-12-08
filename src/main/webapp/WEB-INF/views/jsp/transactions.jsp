@@ -131,7 +131,6 @@
                     </tbody>
                 </table>
             </div>
-            <!-- /.box-body -->
             <div class="box-footer clearfix">
                 <ul class="pagination pagination-sm no-margin pull-right">
                     <c:forEach begin="1" end="${pages}" var="i">

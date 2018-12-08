@@ -43,7 +43,7 @@
 					<div class="col-md-4" style="width: 50%">
 						
 						<div class="info-box" style="background-color: white" >
-				            <a href="budgets/${ budget.key.budgetId }" style="color: #FFFFFF; text-decoration: none !important; margin-bottom: 0px">
+				            <a href="/budgets/${ budget.key.budgetId }" style="color: #FFFFFF; text-decoration: none !important; margin-bottom: 0px">
 								<span class="info-box-icon"><i class="ion ion-information-circled" style="margin-top: 20px"></i></span>
 							</a>
 				            <div class="info-box-content">

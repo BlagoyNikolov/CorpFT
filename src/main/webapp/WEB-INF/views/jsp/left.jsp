@@ -54,7 +54,7 @@
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-pie-chart"></i>
+                        <i class="fa fa-line-chart"></i>
                         <span style="font-size: 20px">Charts</span>
                         <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -63,17 +63,17 @@
                     <ul class="treeview-menu">
                         <li>
                             <a href="<c:url value="/cashflowStructure"></c:url>">
-                                <h4 style="font-size: 16px"><i class="fa fa-circle-o"></i> Cashflow structure</h4>
+                                <h4 style="font-size: 16px"><i class="fa fa-pie-chart"></i> Cashflow Structure</h4>
                             </a>
                         </li>
                         <li>
                             <a href="<c:url value="/incomeVsExpenses"></c:url>">
-                                <h4 style="font-size: 16px"><i class="fa fa-circle-o"></i> Income vs Expenses</h4>
+                                <h4 style="font-size: 16px"><i class="fa fa-adjust"></i> Income vs Expenses</h4>
                             </a>
                         </li>
                         <li>
                             <a href="<c:url value="/cashflowTrend"></c:url>">
-                                <h4 style="font-size: 16px"><i class="fa fa-circle-o"></i> Cashflow trend</h4>
+                                <h4 style="font-size: 16px"><i class="fa fa-area-chart"></i> Cashflow Trend</h4>
                             </a>
                         </li>
                     </ul>
@@ -98,7 +98,6 @@
                 </li>
             </ul>
         </section>
-        <!-- /.sidebar -->
     </aside>
 </div>
 </body>

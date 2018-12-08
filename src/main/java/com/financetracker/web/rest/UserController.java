@@ -104,7 +104,7 @@ public class UserController {
       userService.insertUser(user);
       //            EmailSender.sendSimpleEmail(user.getEmail(), SUBJECT_TEXT_WELCOME, PROFILE_READY);
       session.setAttribute("user", user);
-      return "main";
+      return "redirect:main";
     }
     return "login";
   }

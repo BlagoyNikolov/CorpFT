@@ -29,7 +29,6 @@
     <section class="content">
         <div class="col-md-6">
             <div class="box box-primary">
-                <!-- <form role="form" action="addPlannedPayment" method="post"> -->
                 <f:form role="form" commandName="plannedPayment" method="post" action="addPlannedPayment">
                     <c:if test="${error!=null}">
                         <label style="color: red"><c:out value="${error}"/></label>
@@ -39,7 +38,6 @@
                             <label>Name</label>
                             <f:input type="text" cssClass="form-control" placeholder="Enter planned payment name"
                                      path="name"/>
-                            <!-- <input type="text" class="form-control" placeholder="Enter planned payment name" name="name" > -->
                         </div>
                         <div class="form-group">
                             <label>Type</label>
@@ -108,7 +106,6 @@
                         <div class="form-group">
                             <label>Amount</label>
                             <f:input path="amount" type="text" cssClass="form-control" placeholder="Amount"/>
-                            <!-- <input type="text" class="form-control" placeholder="Amount" name="amount"> -->
                         </div>
                         <div class="form-group">
                             <label>Date</label>
@@ -130,7 +127,6 @@
                         <button type="submit" class="btn btn-primary">Save</button>
                         <a href="<c:url value="/plannedPayments"></c:url>" class="btn btn-default">Cancel</a>
                     </div>
-                    <%-- </form> --%>
                 </f:form>
             </div>
         </div>

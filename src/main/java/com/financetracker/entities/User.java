@@ -1,8 +1,5 @@
 package com.financetracker.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,35 +61,13 @@ public class User {
   @Column(name = "password_token")
   private String passwordToken;
 
-  //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-  //    private Set<Account> accounts;
+  @Column(name = "position")
+  private String position;
 
-  //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-  //    private Set<Category> ownCategories;
-
-  @Column(name = "isAdnmin")
+  @Column(name = "isAdmin")
   private Boolean isAdmin;
 
   public User() {
-    //        this.accounts = new HashSet<>();
-    //        this.ownCategories = new HashSet<>();
-  }
-
-  public User(String username, String password, String email, String firstName, String lastName, Set<Account> accounts,
-              Set<Category> ownCategories, String passwordToken) {
-    this.username = username;
-    this.password = DigestUtils.sha512(password);
-    this.email = email;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    //        this.accounts = accounts;
-    //        this.ownCategories = ownCategories;
-    this.passwordToken = passwordToken;
-  }
-
-  public User(String username, String password, String email, String firstName, String lastName) {
-    this(username, password, email, firstName, lastName, new HashSet<>(), new HashSet<>(),
-        DigestUtils.sha512Hex(DigestUtils.sha512Hex(password) + username));
   }
 
   public User(String email, String firstName) {
@@ -148,16 +123,20 @@ public class User {
     this.lastName = lastName.trim();
   }
 
-  //    public Set<Account> getAccounts() {
-  //        return Collections.unmodifiableSet(accounts);
-  //    }
-
   public String getPasswordToken() {
     return passwordToken;
   }
 
   public void setPasswordToken(String passwordToken) {
     this.passwordToken = passwordToken;
+  }
+
+  public String getPosition() {
+    return position;
+  }
+
+  public void setPosition(String position) {
+    this.position = position;
   }
 
   public Boolean getIsAdmin() {

@@ -30,14 +30,12 @@
         <div class="col-md-6">
             <div class="box box-primary">
                 <f:form role="form" commandName="transaction" method="post" action="addTransaction">
-                    <%-- <form role="form" action="addTransaction" method="post"> --%>
                     <c:if test="${error!=null}">
                         <label style="color: red"><c:out value="${error}"/></label>
                     </c:if>
                     <div class="box-body">
                         <div class="form-group">
                             <label>Type</label>
-                                <%-- <f:select path="type" cssClass="form-control select2" cssStyle="width: 100%;" data-placeholder="Select a type" name="type" id="typ" onchange="myFunction()"> --%>
                             <select class="form-control select2" style="width: 100%;" data-placeholder="Select a type"
                                     name="type" onchange="myFunction()" id="typ">
                                 <option></option>
@@ -120,9 +118,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Save</button>
                         <a class="btn btn-default" href="javascript:history.back(1)">Cancel</a>
-                        <%--<a href="<c:url value="/account/${sessionScope.accountId}"></c:url>" class="btn btn-default">Cancel</a>--%>
                     </div>
-                    <%-- </form> --%>
                 </f:form>
             </div>
         </div>
