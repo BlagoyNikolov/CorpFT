@@ -1,4 +1,4 @@
-package com.financetracker.rest;
+package com.financetracker.web.rest;
 
 import com.financetracker.entities.Category;
 import com.financetracker.services.CategoryService;

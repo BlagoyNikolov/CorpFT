@@ -72,8 +72,7 @@ public class ChartServiceImpl implements ChartService {
     String categoryName = cat.getName();
     BigDecimal sum = cat.getTransactions()
         .stream()
-        //                .filter(tr -> (tr.getAccount().getUser().getUserId() == user.getUserId()))
-        .map(tr -> tr.getAmount())
+        .map(tr -> tr.getEurAmount())
         .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
 
     if (sum != BigDecimal.ZERO) {
@@ -95,17 +94,15 @@ public class ChartServiceImpl implements ChartService {
           if (account.equals(ALL_ACCOUNTS)) {
             sum = cat.getTransactions()
                 .stream()
-                //                    .filter(tr -> (tr.getAccount().getUser().getUserId() == user.getUserId()))
                 .filter(transaction -> (transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to)))
-                .map(tr -> tr.getAmount())
+                .map(tr -> tr.getEurAmount())
                 .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           } else {
             sum = cat.getTransactions()
                 .stream()
-                //                    .filter(tr -> (tr.getAccount().getUser().getUserId() == user.getUserId()))
                 .filter(transaction -> (transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to)))
                 .filter(transaction -> (transaction.getAccount().getName().equals(account)))
-                .map(tr -> tr.getAmount())
+                .map(tr -> tr.getEurAmount())
                 .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           }
           if (sum != BigDecimal.ZERO) {
@@ -127,14 +124,14 @@ public class ChartServiceImpl implements ChartService {
           BigDecimal incomeSum = acc.getTransactions()
               .stream()
               .filter(transaction -> (transaction.getType().equals(PaymentType.INCOME)))
-              .map(transaction -> transaction.getAmount())
+              .map(transaction -> transaction.getEurAmount())
               .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           result.put(INCOME, result.get(INCOME).add(incomeSum));
 
           BigDecimal expenseSum = acc.getTransactions()
               .stream()
               .filter(transaction -> (transaction.getType().equals(PaymentType.EXPENSE)))
-              .map(transaction -> transaction.getAmount())
+              .map(transaction -> transaction.getEurAmount())
               .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           result.put(EXPENSE, result.get(EXPENSE).add(expenseSum));
         });
@@ -156,7 +153,7 @@ public class ChartServiceImpl implements ChartService {
               .filter(transaction -> (transaction.getType().equals(PaymentType.INCOME)))
               .filter(transaction -> (accountId == 0) || (transaction.getAccount().getAccountId() == accountId))
               .filter(transaction -> transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to))
-              .map(transaction -> transaction.getAmount())
+              .map(transaction -> transaction.getEurAmount())
               .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           result.put(INCOME, result.get(INCOME).add(incomeSum));
 
@@ -165,7 +162,7 @@ public class ChartServiceImpl implements ChartService {
               .filter(transaction -> (transaction.getType().equals(PaymentType.EXPENSE)))
               .filter(transaction -> (accountId == 0) || (transaction.getAccount().getAccountId() == accountId))
               .filter(transaction -> transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to))
-              .map(transaction -> transaction.getAmount())
+              .map(transaction -> transaction.getEurAmount())
               .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
           result.put(EXPENSE, result.get(EXPENSE).add(expenseSum));
         });
@@ -185,7 +182,7 @@ public class ChartServiceImpl implements ChartService {
               .map(transaction -> new TransactionVisualizer(transaction))
               .collect(
                   Collectors.groupingBy(TransactionVisualizer::getDate,
-                      Collectors.mapping(TransactionVisualizer::getAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+                      Collectors.mapping(TransactionVisualizer::getEurAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
 
           aggregateTransactions(result, map);
         });

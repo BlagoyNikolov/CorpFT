@@ -14,7 +14,7 @@ import java.util.TreeSet;
  */
 public interface ReportService {
 
-  TreeSet<Transaction> getAllReportTransactions(User user, Set<Account> allAccounts);
+  TreeSet<Transaction> getAllReportTransactions(Set<Account> allAccounts);
 
   TreeSet<Transaction> getFilteredReportTransactions(User user, String categoryName, String type, String accName, String date,
                                                      Set<Account> allAccounts);

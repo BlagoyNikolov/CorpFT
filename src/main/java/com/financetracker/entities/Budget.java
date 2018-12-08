@@ -68,6 +68,10 @@ public class Budget {
   @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
   private Currency currency;
 
+  @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
+  @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+  private User user;
+
   @Column(name = "inserted_by")
   private String insertedBy;
 
@@ -154,6 +158,14 @@ public class Budget {
     this.currency = currency;
   }
 
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   public String getInsertedBy() {
     return insertedBy;
   }
@@ -188,6 +200,7 @@ public class Budget {
     private Account account;
     private Category category;
     private Currency currency;
+    private User user;
     private String insertedBy;
 
     public BudgetBuilder() {
@@ -238,6 +251,11 @@ public class Budget {
       return this;
     }
 
+    public BudgetBuilder setUser(User user) {
+      this.user = user;
+      return this;
+    }
+
     public BudgetBuilder setInsertedBy(String insertedBy) {
       this.insertedBy = insertedBy;
       return this;
@@ -254,6 +272,7 @@ public class Budget {
       budget.account = this.account;
       budget.category = this.category;
       budget.currency = this.currency;
+      budget.user = this.user;
       budget.insertedBy = this.insertedBy;
       return budget;
     }

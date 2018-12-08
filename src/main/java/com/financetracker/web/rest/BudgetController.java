@@ -1,4 +1,4 @@
-package com.financetracker.rest;
+package com.financetracker.web.rest;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Budget;
@@ -50,7 +50,7 @@ public class BudgetController {
 
   @RequestMapping(value = "/budgets", method = RequestMethod.GET)
   public String getAllBudgets(HttpSession session, Model model) {
-    Map<Budget, BigDecimal> map = budgetService.getBudgets();
+    Map<Budget, BigDecimal> map = budgetService.getBudgets(null);
     model.addAttribute(BUDGETS, map);
     return "budgets";
   }

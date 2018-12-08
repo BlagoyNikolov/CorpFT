@@ -51,6 +51,7 @@ public class BudgetServiceImpl implements BudgetService {
     budget.setAccount(account);
     budget.setCategory(category);
     budget.setCurrency(account.getCurrency());
+    budget.setUser(user);
     budget.setInsertedBy(user.getFirstName() + " " + user.getLastName());
 
     insertBudget(budget);
@@ -90,6 +91,8 @@ public class BudgetServiceImpl implements BudgetService {
       .setToDate(dateRange[1])
       .setAccount(account)
       .setCategory(category)
+      .setUser(user)
+      .setInsertedBy(user.getFirstName() + " " + user.getLastName())
       .build();
 
     boolean existsBudget = newBudget.getCategory().getCategoryId() != oldBudget.getCategory().getCategoryId()
@@ -130,7 +133,7 @@ public class BudgetServiceImpl implements BudgetService {
     budgetRepository.delete(budget);
   }
 
-  public Map<Budget, BigDecimal> getBudgets() {
+  public Map<Budget, BigDecimal> getBudgets(Long employeeId) {
     Set<Budget> budgets = null;
     BigDecimal percent = new BigDecimal(0.0);
 
@@ -141,7 +144,12 @@ public class BudgetServiceImpl implements BudgetService {
       return b2.getFromDate().compareTo(b1.getFromDate());
     });
 
-    budgets = getAllBudgets();
+    if (null == employeeId) {
+      budgets = getAllBudgets();
+    } else {
+      budgets = getAllBudgetsByEmployeeId(employeeId);
+    }
+
     for (Budget budget : budgets) {
       percent = budget.getAmount().divide(budget.getInitialAmount(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
       map.put(budget, percent);
@@ -182,6 +190,13 @@ public class BudgetServiceImpl implements BudgetService {
 
   private Set<Budget> getAllBudgets() {
     List<Budget> budgetList = budgetRepository.findAll();
+    Set<Budget> budgetSet = new HashSet<>();
+    budgetSet.addAll(budgetList);
+    return budgetSet;
+  }
+
+  private Set<Budget> getAllBudgetsByEmployeeId(Long userId) {
+    List<Budget> budgetList = budgetRepository.findByUserUserId(userId);
     Set<Budget> budgetSet = new HashSet<>();
     budgetSet.addAll(budgetList);
     return budgetSet;

@@ -80,6 +80,9 @@ public class Transaction {
   @Column(name = "account_amount")
   private BigDecimal accountAmount;
 
+  @Column(name = "eur_amount")
+  private BigDecimal eurAmount;
+
   @ManyToMany
   @JoinTable(
       name = "budgets_has_transactions",
@@ -187,6 +190,14 @@ public class Transaction {
     this.accountAmount = accountAmount;
   }
 
+  public BigDecimal getEurAmount() {
+    return eurAmount;
+  }
+
+  public void setEurAmount(BigDecimal eurAmount) {
+    this.eurAmount = eurAmount;
+  }
+
   public static class TransactionBuilder {
     private PaymentType paymentType;
     private String description;
@@ -200,6 +211,7 @@ public class Transaction {
     private BigDecimal accountAmount;
     private String insertedBy;
     private String categoryName;
+    private BigDecimal eurAmount;
 
     public TransactionBuilder() {
     }
@@ -264,6 +276,11 @@ public class Transaction {
       return this;
     }
 
+    public TransactionBuilder setEurAmount(BigDecimal eurAmount) {
+      this.eurAmount = eurAmount;
+      return this;
+    }
+
     public Transaction build() {
       Transaction trn = new Transaction();
       trn.type = this.paymentType;
@@ -278,6 +295,7 @@ public class Transaction {
       trn.accountAmount = this.accountAmount;
       trn.insertedBy = this.insertedBy;
       trn.categoryName = this.categoryName;
+      trn.eurAmount = this.eurAmount;
       return trn;
     }
   }

@@ -49,7 +49,10 @@
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Username</th>
-                            <th>Activity</th>
+                            <th>Admin Privileges</th>
+                            <th>Transactions</th>
+                            <th>Planned Payments</th>
+                            <th>Budgets</th>
                         </tr>
                         <c:forEach items="${pagedUsers}" var="user">
                             <tr>
@@ -69,8 +72,37 @@
                                     <p style="font-size: 21px;"><c:out value="${user.username }"></c:out></p>
                                 </td>
 
-                                <td>
-                                    <a href="/employees/${user.userId}"><i class="fa fa-search" style="font-size: 21px;"></i></a>
+                                <td width="10%">
+                                    <c:choose>
+                                        <c:when test="${user.isAdmin eq true}">
+                                            <p style="font-size: 21px;">
+                                                <i class="fa fa-check"></i>
+                                            </p>
+                                        </c:when>
+                                        <c:when test="${user.isAdmin eq false}">
+                                            <p style="font-size: 21px;">
+                                                <i class="fa fa-close"></i>
+                                            </p>
+                                        </c:when>
+                                    </c:choose>
+                                </td>
+
+                                <td width="10%">
+                                    <a href="/employees/transactions/${user.userId}">
+                                        <i class="fa fa-bar-chart" style="font-size: 21px;"></i>
+                                    </a>
+                                </td>
+
+                                <td width="10%">
+                                    <a href="/employees/plannedPayments/${user.userId}">
+                                        <i class="fa fa-calendar-check-o" style="font-size: 21px;"></i>
+                                    </a>
+                                </td>
+
+                                <td width="10%">
+                                    <a href="/employees/budgets/${user.userId}">
+                                        <i class="fa fa fa-money" style="font-size: 21px;"></i>
+                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>

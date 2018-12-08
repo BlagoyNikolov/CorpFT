@@ -36,7 +36,7 @@
                             class="ion ion-plus"></i> Add new payment</a>
                 </div>
                 <div class="col-sm-3">
-                    <a href="<c:url value="/main"></c:url>" type="button" class="btn btn-block btn-default btn-lg"><i
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-block btn-default btn-lg"><i
                             class="ion ion-android-arrow-back"></i> Back</a>
                 </div>
             </div>
@@ -49,6 +49,7 @@
                     <tr>
                         <th>Description</th>
                         <th>Added by</th>
+                        <th>Account</th>
                         <th>Date</th>
                         <th>Amount</th>
                         <th>Account amount</th>
@@ -57,12 +58,16 @@
                     </tr>
                     <c:forEach items="${pagedPlannedPayments}" var="plannedPayment">
                         <tr>
-                            <td width="30%">
+                            <td width="20%">
                                 <p style="font-size: 21px;"><c:out value="${plannedPayment.description }"></c:out></p>
                             </td>
 
                             <td>
                                 <p style="font-size: 21px;"><c:out value="${plannedPayment.insertedBy }"></c:out></p>
+                            </td>
+
+                            <td>
+                                <p style="font-size: 21px;"><c:out value="${plannedPayment.account.name }"></c:out></p>
                             </td>
 
                             <fmt:parseDate value="${ plannedPayment.fromDate }" pattern="yyyy-MM-dd'T'HH:mm"

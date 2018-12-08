@@ -27,7 +27,7 @@ public interface BudgetService {
 
   void deleteBudget(Budget budget);
 
-  Map<Budget, BigDecimal> getBudgets();
+  Map<Budget, BigDecimal> getBudgets(Long employeeId);
 
   TreeSet<Transaction> getBudgetTransactions(Long budgetId);
 

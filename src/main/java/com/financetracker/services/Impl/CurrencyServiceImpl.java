@@ -2,7 +2,7 @@ package com.financetracker.services.Impl;
 
 import com.financetracker.entities.Currency;
 import com.financetracker.repositories.CurrencyRepository;
-import com.financetracker.rest.resources.FxResponse;
+import com.financetracker.web.rest.resources.FxResponse;
 import com.financetracker.services.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,4 +45,12 @@ public class CurrencyServiceImpl implements CurrencyService {
     return amount.multiply(fxRate);
   }
 
+  @Override
+  public BigDecimal convertToEuro(Currency from, BigDecimal amount) {
+    if ("EUR".equals(from.getCurrencyId())) {
+      return amount;
+    }
+    Currency euro = getCurrencyByCurrencyName("EUR");
+    return convertToAccountCurrency(from, euro, amount);
+  }
 }

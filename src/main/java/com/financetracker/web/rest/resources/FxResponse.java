@@ -1,4 +1,4 @@
-package com.financetracker.rest.resources;
+package com.financetracker.web.rest.resources;
 
 import java.util.HashMap;
 import java.util.Map;

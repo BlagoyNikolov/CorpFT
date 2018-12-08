@@ -45,7 +45,7 @@ public class SearchServiceImpl implements SearchService {
       return b2.getFromDate().compareTo(b1.getFromDate());
     });
 
-    Map<Budget, BigDecimal> budgets = budgetService.getBudgets();
+    Map<Budget, BigDecimal> budgets = budgetService.getBudgets(null);
     for (Map.Entry<Budget, BigDecimal> entry : budgets.entrySet()) {
       Budget budget = entry.getKey();
       if (budget.getName().toLowerCase().contains(keyword.toLowerCase())) {

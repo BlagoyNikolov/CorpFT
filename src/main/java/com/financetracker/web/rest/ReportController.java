@@ -1,4 +1,4 @@
-package com.financetracker.rest;
+package com.financetracker.web.rest;
 
 import com.financetracker.entities.Account;
 import com.financetracker.entities.Transaction;
@@ -25,10 +25,9 @@ public class ReportController {
   private ReportService reportService;
 
   @RequestMapping(value = "/reports", method = RequestMethod.GET)
-  public String getAllReports(HttpSession session, Model model) {
-    User user = (User) session.getAttribute("user");
+  public String getAllReports(Model model) {
     Set<Account> allAccounts = new TreeSet<>((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()));
-    TreeSet<Transaction> allTransactions = reportService.getAllReportTransactions(user, allAccounts);
+    TreeSet<Transaction> allTransactions = reportService.getAllReportTransactions(allAccounts);
 
     List<Transaction> transactionsPaged = reportService.getPagingTransactions(allTransactions, 1);
     int allCount = allTransactions.size();
@@ -75,7 +74,7 @@ public class ReportController {
   public String transactionPaging(@PathVariable("page") int page, HttpSession session, Model model) {
     User user = (User) session.getAttribute("user");
     Set<Account> allAccounts = new TreeSet<>((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()));
-    TreeSet<Transaction> allTransactions = reportService.getAllReportTransactions(user, allAccounts);
+    TreeSet<Transaction> allTransactions = reportService.getAllReportTransactions(allAccounts);
 
     List<Transaction> transactionsPaged = reportService.getPagingTransactions(allTransactions, page);
     int allCount = allTransactions.size();

@@ -12,4 +12,6 @@ public interface CurrencyService {
   List<String> getCurrencyList();
 
   BigDecimal convertToAccountCurrency(Currency from, Currency to, BigDecimal amount);
+
+  BigDecimal convertToEuro(Currency from, BigDecimal amount);
 }

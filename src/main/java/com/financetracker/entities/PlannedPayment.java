@@ -84,6 +84,9 @@ public class PlannedPayment {
   @Column(name = "account_amount")
   private BigDecimal accountAmount;
 
+  @Column(name = "eur_amount")
+  private BigDecimal eurAmount;
+
   public long getPlannedPaymentId() {
     return plannedPaymentId;
   }
@@ -180,6 +183,14 @@ public class PlannedPayment {
     this.accountAmount = accountAmount;
   }
 
+  public BigDecimal getEurAmount() {
+    return eurAmount;
+  }
+
+  public void setEurAmount(BigDecimal eurAmount) {
+    this.eurAmount = eurAmount;
+  }
+
   public static class PlannedPaymentBuilder {
     private String name;
     private PaymentType paymentType;
@@ -194,6 +205,7 @@ public class PlannedPayment {
     private User user;
     private String insertedBy;
     private BigDecimal accountAmount;
+    private BigDecimal eurAmount;
 
     public PlannedPaymentBuilder() {
     }
@@ -263,6 +275,11 @@ public class PlannedPayment {
       return this;
     }
 
+    public PlannedPaymentBuilder setEurAmount(BigDecimal eurAmount) {
+      this.eurAmount = eurAmount;
+      return this;
+    }
+
     public PlannedPayment build() {
       PlannedPayment plannedPayment = new PlannedPayment();
       plannedPayment.name = this.name;
@@ -278,6 +295,7 @@ public class PlannedPayment {
       plannedPayment.user = this.user;
       plannedPayment.insertedBy = this.insertedBy;
       plannedPayment.accountAmount = this.accountAmount;
+      plannedPayment.eurAmount = this.eurAmount;
       return plannedPayment;
     }
   }

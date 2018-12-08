@@ -24,8 +24,8 @@
     </section>
     <section class="content">
         <c:if test="${empty pagedTransactions }">
-        <h3><i class="ion ion-information-circled"></i> No records yet</h3>
-        <h4>Track your expenses and income. Start by adding a new record.</h4>
+            <h3><i class="ion ion-information-circled"></i> No records yet</h3>
+            <h4>Track your expenses and income. Start by adding a new record.</h4>
         </c:if>
 
         <div style="margin-bottom: 25px">

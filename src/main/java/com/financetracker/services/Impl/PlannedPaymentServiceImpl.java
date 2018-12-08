@@ -62,13 +62,15 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     Account acc = accountService.getAccountByAccountName(account);
     Category cat = categoryService.getCategoryByCategoryName(category);
     Currency currency = currencyService.getCurrencyByCurrencyName(currencyId);
-    BigDecimal convertedValue = currencyService.convertToAccountCurrency(currency, acc.getCurrency(), plannedPayment.getAmount());
+    BigDecimal accountAmount = currencyService.convertToAccountCurrency(currency, acc.getCurrency(), plannedPayment.getAmount());
+    BigDecimal eurAmount = currencyService.convertToEuro(currency, plannedPayment.getAmount());
     return new PlannedPayment.PlannedPaymentBuilder()
         .setName(name)
         .setPaymentType(PaymentType.valueOf(type))
         .setDate(date)
         .setAmount(BigDecimal.valueOf(Double.valueOf(amount)))
-        .setAccountAmount(convertedValue)
+        .setAccountAmount(accountAmount)
+        .setEurAmount(eurAmount)
         .setDescription(plannedPayment.getDescription())
         .setAccount(acc)
         .setCategory(cat)
@@ -101,7 +103,7 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
 
   private void executePlannedPayment(PlannedPayment plannedPayment) {
     Account acc = accountService.getAccountByAccountId(plannedPayment.getAccount().getAccountId());
-    BigDecimal newValue = plannedPayment.getAmount();
+    BigDecimal newValue = plannedPayment.getAccountAmount();
     BigDecimal oldValue = accountService.getAmountByAccountId(acc.getAccountId());
     Transaction transaction = null;
 
@@ -122,7 +124,13 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     plannedPaymentRepository.delete(plannedPaymentId);
   }
 
-  public TreeMap<Integer, List<PlannedPayment>> getPlannedPaymentsChunks() {
+  @Override
+  public List<PlannedPayment> getPagingPlannedPayments(int page) {
+    TreeMap<Integer, List<PlannedPayment>> plannedPayments = getPlannedPaymentsChunks();
+    return plannedPayments.get(page);
+  }
+
+  private TreeMap<Integer, List<PlannedPayment>> getPlannedPaymentsChunks() {
     TreeMap<Integer, List<PlannedPayment>> result = new TreeMap<>();
     List<PlannedPayment> plannedPayments = this.getAllPlannedPayments();
     plannedPayments.sort(new PlannedPaymentComparator());
@@ -137,18 +145,13 @@ public class PlannedPaymentServiceImpl implements PlannedPaymentService {
     return result;
   }
 
-  @Override
-  public List<PlannedPayment> getPagingPlannedPayments(int page) {
-    TreeMap<Integer, List<PlannedPayment>> plannedPayments = getPlannedPaymentsChunks();
-    return plannedPayments.get(page);
-  }
-
   private Transaction createTransactionByPlannedPayment(PaymentType type, String description, PlannedPayment plannedPayment, User user, BigDecimal accountAmount) {
     return new Transaction.TransactionBuilder()
         .setPaymentType(type)
         .setDescription(description)
         .setAmount(plannedPayment.getAmount())
         .setAccount(plannedPayment.getAccount())
+        .setEurAmount(plannedPayment.getEurAmount())
         .setCategory(plannedPayment.getCategory())
         .setCategoryName(plannedPayment.getAccount().getName())
         .setDate(LocalDateTime.now())

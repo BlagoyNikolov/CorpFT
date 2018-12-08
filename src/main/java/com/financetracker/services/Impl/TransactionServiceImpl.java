@@ -78,7 +78,8 @@ public class TransactionServiceImpl implements TransactionService {
     Account persistedAccount = accountService.getAccountByAccountName(accountName);
     Category persistedCategory = categoryService.getCategoryByCategoryName(category);
     Currency persistedCurrency = currencyService.getCurrencyByCurrencyName(currency);
-    BigDecimal convertedValue = currencyService.convertToAccountCurrency(persistedCurrency, persistedAccount.getCurrency(), transaction.getAmount());
+    BigDecimal accountAmount = currencyService.convertToAccountCurrency(persistedCurrency, persistedAccount.getCurrency(), transaction.getAmount());
+    BigDecimal eurAmount = currencyService.convertToEuro(persistedCurrency, transaction.getAmount());
     String categoryName = categoryService.getCategoryNameByCategoryId(persistedCategory.getCategoryId());
     return new Transaction.TransactionBuilder()
       .setPaymentType(PaymentType.valueOf(type))
@@ -90,7 +91,8 @@ public class TransactionServiceImpl implements TransactionService {
       .setUser(user)
       .setCurrency(transaction.getCurrency())
       .setAccountCurrency(persistedAccount.getCurrency())
-      .setAccountAmount(convertedValue)
+      .setAccountAmount(accountAmount)
+      .setEurAmount(eurAmount)
       .setCategoryName(categoryName)
       .setInsertedBy(user.getFirstName() + " " + user.getLastName())
       .build();
@@ -112,24 +114,20 @@ public class TransactionServiceImpl implements TransactionService {
     BigDecimal oldValue = accountService.getAmountByAccountId(newTransaction.getAccount().getAccountId());
     Transaction existingTransaction = getTransactionByTransactionId(transactionId);
     if (existingTransaction.getType().equals(PaymentType.EXPENSE)) {
-      acc.setAmount(oldValue.add(existingTransaction.getAmount()));
+      acc.setAmount(oldValue.add(existingTransaction.getAccountAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).subtract(newValue));
       accountService.updateAccount(acc);
     } else if (existingTransaction.getType().equals(PaymentType.INCOME)) {
-      acc.setAmount(oldValue.subtract(existingTransaction.getAmount()));
+      acc.setAmount(oldValue.subtract(existingTransaction.getAccountAmount()));
       acc.setAmount(accountService.getAmountByAccountId(acc.getAccountId()).add(newValue));
       accountService.updateAccount(acc);
     }
-    updateTransaction(newTransaction);
+    transactionRepository.save(newTransaction);
   }
 
   public void insertTransaction(Transaction transaction) {
     transactionRepository.save(transaction);
     addTransactionToExistingBudgets(transaction);
-  }
-
-  private void updateTransaction(Transaction transaction) {
-    transactionRepository.save(transaction);
   }
 
   private void addTransactionToExistingBudgets(Transaction transaction) {
@@ -162,6 +160,7 @@ public class TransactionServiceImpl implements TransactionService {
   public void insertTransaction(User user, Account account) {
     Account acc = accountService.getAccountByAccountName(account.getName());
     Category cat = categoryService.getCategoryByCategoryName(DEPOSIT);
+    BigDecimal eurAmount = currencyService.convertToEuro(account.getCurrency(), acc.getAmount());
     String description = String.format("Deposit in %s", acc.getName());
     Transaction trn = new Transaction.TransactionBuilder()
       .setPaymentType(PaymentType.INCOME)
@@ -174,6 +173,7 @@ public class TransactionServiceImpl implements TransactionService {
       .setCurrency(account.getCurrency())
       .setAccountCurrency(account.getCurrency())
       .setAccountAmount(acc.getAmount())
+      .setEurAmount(eurAmount)
       .setInsertedBy(user.getFirstName() + " " + user.getLastName())
       .setCategoryName(cat.getName())
       .build();

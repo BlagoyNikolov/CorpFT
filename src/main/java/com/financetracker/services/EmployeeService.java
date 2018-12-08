@@ -1,5 +1,6 @@
 package com.financetracker.services;
 
+import com.financetracker.entities.PlannedPayment;
 import com.financetracker.entities.Transaction;
 import com.financetracker.entities.User;
 
@@ -12,7 +13,11 @@ public interface EmployeeService {
 
   TreeSet<Transaction> getAllTransactionsByUserId(Long userId);
 
+  TreeSet<PlannedPayment> getAllPlannedPaymentsByUserId(Long userId);
+
   List<Transaction> getPagingTransactions(Long userId, int page);
+
+  List<PlannedPayment> getPagingPlannedPayments(Long userId, int page);
 
   User getEmployeeById(Long userId);
 }

@@ -19,4 +19,6 @@ public interface PlannedPaymentRepository extends JpaRepository<PlannedPayment, 
   List<PlannedPayment> findAllByFromDate(LocalDateTime localDateTime);
 
   Set<PlannedPayment> findAllByDescriptionContaining(String keyword);
+
+  List<PlannedPayment> findByUserUserId(long userId);
 }

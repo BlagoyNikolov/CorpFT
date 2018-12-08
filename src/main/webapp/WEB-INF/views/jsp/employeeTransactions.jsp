@@ -51,19 +51,25 @@
                     <tr>
                         <th>Description</th>
                         <th>Added by</th>
+                        <th>Account</th>
                         <th>Date</th>
-                        <th>Amount (USD)</th>
+                        <th>Amount</th>
+                        <th>Account amount</th>
                         <th>Category</th>
                         <th>Edit</th>
                     </tr>
                     <c:forEach items="${pagedTransactions}" var="transaction">
                         <tr>
-                            <td>
+                            <td width="20%">
                                 <p style="font-size: 21px;"><c:out value="${transaction.description }"></c:out></p>
                             </td>
 
                             <td>
                                 <p style="font-size: 21px;"><c:out value="${transaction.insertedBy }"></c:out></p>
+                            </td>
+
+                            <td>
+                                <p style="font-size: 21px;"><c:out value="${transaction.account.name }"></c:out></p>
                             </td>
 
                             <fmt:parseDate value="${ transaction.date }" pattern="yyyy-MM-dd'T'HH:mm"
@@ -77,13 +83,32 @@
                                 <c:when test="${transaction.type eq 'INCOME'}">
                                     <td style="color: green;">
                                         <p style="font-size: 21px;">+ <fmt:formatNumber value="${transaction.amount}"
-                                                                                        minFractionDigits="2"/></p>
+                                                                                        minFractionDigits="2"/> <c:out
+                                                value="${transaction.currency.currencyId }"></c:out></p>
                                     </td>
                                 </c:when>
                                 <c:when test="${transaction.type eq 'EXPENSE'}">
                                     <td style="color: red;">
                                         <p style="font-size: 21px;">- <fmt:formatNumber value="${transaction.amount}"
-                                                                                        minFractionDigits="2"/></p>
+                                                                                        minFractionDigits="2"/> <c:out
+                                                value="${transaction.currency.currencyId }"></c:out></p>
+                                    </td>
+                                </c:when>
+                            </c:choose>
+
+                            <c:choose>
+                                <c:when test="${transaction.type eq 'INCOME'}">
+                                    <td style="color: green;">
+                                        <p style="font-size: 21px;">+ <fmt:formatNumber
+                                                value="${transaction.accountAmount}"
+                                                minFractionDigits="2"/> <c:out value="${transaction.accountCurrency.currencyId }"></c:out></p>
+                                    </td>
+                                </c:when>
+                                <c:when test="${transaction.type eq 'EXPENSE'}">
+                                    <td style="color: red;">
+                                        <p style="font-size: 21px;">- <fmt:formatNumber
+                                                value="${transaction.accountAmount}"
+                                                minFractionDigits="2"/> <c:out value="${transaction.accountCurrency.currencyId }"></c:out></p>
                                     </td>
                                 </c:when>
                             </c:choose>

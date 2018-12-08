@@ -31,7 +31,7 @@ public class ReportServiceImpl implements ReportService {
   @Autowired
   private AccountService accountService;
 
-  public TreeSet<Transaction> getAllReportTransactions(User user, Set<Account> allAccounts) {
+  public TreeSet<Transaction> getAllReportTransactions(Set<Account> allAccounts) {
     TreeSet<Transaction> allTransactions = new TreeSet<>(new TransactionComparator());
     for (Account acc : accountService.getAllAccounts()) {
       allAccounts.add(acc);
