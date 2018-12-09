@@ -27,7 +27,7 @@ public class CategoryController {
   private CategoryService categoryService;
 
   @RequestMapping(value = "/addCategory", method = RequestMethod.GET)
-  public String displayCategory(HttpSession session, Model model, HttpServletRequest request) {
+  public String displayCategory(HttpSession session, Model model) {
     String link = (String) session.getAttribute("link");
     Category category = new Category();
     model.addAttribute("link", link);
@@ -36,14 +36,13 @@ public class CategoryController {
   }
 
   @RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-  public String addCategory(HttpServletRequest request, HttpSession session, Model viewModel,
+  public String addCategory(HttpSession session, Model viewModel,
                             @Valid @ModelAttribute("category") Category category, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       viewModel.addAttribute("error", ERROR_MESSAGE);
       return "category";
     }
 
-    //        User user = (User) request.getSession().getAttribute("user");
     categoryService.postCategory(category);
     String link = (String) session.getAttribute("link");
     return "redirect:" + link;
@@ -51,8 +50,7 @@ public class CategoryController {
 
   @CrossOrigin(origins = "*")
   @GetMapping("/account/getCategory/{type}")
-  public ResponseEntity getCategoriesAsync(HttpSession session, @PathVariable("type") String type) {
-    //        User user = (User) session.getAttribute("user");
+  public ResponseEntity getCategoriesAsync(@PathVariable("type") String type) {
     return ResponseEntity.ok(categoryService.getCategories(type));
   }
 }

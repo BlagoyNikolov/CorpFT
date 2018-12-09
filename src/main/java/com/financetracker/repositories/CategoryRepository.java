@@ -13,14 +13,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
   Category findByCategoryId(long categoryId);
 
-  //    Set<Category> findByUserIsNull();
-
-  //    Set<Category> findByUserUserId(long userId);
-
   Category findByName(String categoryName);
 
   List<Category> findAllByType(PaymentType type);
-
-  //    @Query(value = "SELECT c FROM Category c WHERE (user_id = ?1 OR user_id IS NULL) AND type = ?2")
-  //    Set<Category> getCategories(User user, PaymentType type);
 }

@@ -43,10 +43,6 @@ public class Category {
   @Enumerated(EnumType.STRING)
   private PaymentType type;
 
-  //    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
-  //    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-  //    private User user;
-
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
   private List<Transaction> transactions;
 
@@ -60,16 +56,6 @@ public class Category {
     this.transactions = new ArrayList<>();
     this.budgets = new ArrayList<>();
     this.plannedPayments = new ArrayList<>();
-  }
-
-  public Category(String name, PaymentType type,
-                  List<Transaction> transactions, List<Budget> budgets, List<PlannedPayment> plannedPayments) {
-    this.name = name;
-    this.type = type;
-    //        this.user = user;
-    this.transactions = transactions;
-    this.budgets = budgets;
-    this.plannedPayments = plannedPayments;
   }
 
   public long getCategoryId() {
@@ -96,14 +82,6 @@ public class Category {
     this.type = type;
   }
 
-  //    public User getUser() {
-  //        return user;
-  //    }
-  //
-  //    public void setUser(User user) {
-  //        this.user = user;
-  //    }
-
   public List<Transaction> getTransactions() {
     return Collections.unmodifiableList(transactions);
   }
@@ -126,7 +104,6 @@ public class Category {
     result = prime * result + ((plannedPayments == null) ? 0 : plannedPayments.hashCode());
     result = prime * result + ((transactions == null) ? 0 : transactions.hashCode());
     result = prime * result + ((type == null) ? 0 : type.hashCode());
-    //        result = prime * result + ((user == null) ? 0 : user.hashCode());
     return result;
   }
 
@@ -176,13 +153,6 @@ public class Category {
     if (type != other.type) {
       return false;
     }
-    //        if (user == null) {
-    //            if (other.user != null) {
-    //                return false;
-    //            }
-    //        } else if (!user.equals(other.user)) {
-    //            return false;
-    //        }
     return true;
   }
 }

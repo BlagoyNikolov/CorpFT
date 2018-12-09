@@ -128,7 +128,7 @@
             <div class="box-footer clearfix">
                 <ul class="pagination pagination-sm no-margin pull-right">
                     <c:forEach begin="1" end="${pages}" var="i">
-                        <li><a href="/employees/${employeeId}/${i}"><c:out value="${i}"></c:out></a></li>
+                        <li><a href="/employees/transactions/${employeeId}/${i}"><c:out value="${i}"></c:out></a></li>
                     </c:forEach>
                 </ul>
             </div>

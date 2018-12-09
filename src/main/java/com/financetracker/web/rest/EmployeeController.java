@@ -75,7 +75,7 @@ public class EmployeeController {
     return "budgets";
   }
 
-  @GetMapping(value = "/employees/{employeeId}/{page}")
+  @GetMapping(value = "/employees/transactions/{employeeId}/{page}")
   public String transactionPaging(@PathVariable("employeeId") Long employeeId, @PathVariable("page") int page, Model model) {
     List<Transaction> transactionsPaged = employeeService.getPagingTransactions(employeeId, page);
     User employee = employeeService.getEmployeeById(employeeId);

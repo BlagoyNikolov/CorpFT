@@ -18,8 +18,6 @@ public interface AccountService {
 
   long getAccountId(User user, String name);
 
-  //    Set<Account> getAllAccountsByUser(User user);
-
   Set<Account> getAllAccounts();
 
   Account getAccountByAccountId(long accountId);

@@ -61,14 +61,6 @@ public class ReportServiceImpl implements ReportService {
     Set<Category> categories = new HashSet<>();
 
     if (categoryId == 0) {
-//      if (type.equals(ALL_TYPES)) {
-//        Set<Category> defaultCategories = categoryService.getAllCategoriesByUserId();
-//        Set<Category> ownCategories = categoryService.getAllCategoriesByUserId(user.getUserId());
-//        categories.addAll(defaultCategories);
-//        categories.addAll(ownCategories);
-//      } else {
-//        categories = categoryService.getAllCategoriesByType(PaymentType.valueOf(type));
-//      }
       if (type.equals(ALL_TYPES)) {
         categories = categoryService.getAllCategories();
       } else {
@@ -82,7 +74,6 @@ public class ReportServiceImpl implements ReportService {
       categories.stream().filter(cat -> cat.getTransactions().size() != 0).forEach(cat -> {
         Set<Transaction> transactions = cat.getTransactions()
             .stream()
-            //                    .filter(tr -> (tr.getAccount().getUser().getUserId() == user.getUserId()))
             .filter(transaction -> (transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to)))
             .collect(Collectors.toSet());
         result.addAll(transactions);
@@ -91,7 +82,6 @@ public class ReportServiceImpl implements ReportService {
       categories.stream().filter(cat -> cat.getTransactions().size() != 0).forEach(cat -> {
         Set<Transaction> transactions = cat.getTransactions()
             .stream()
-            //                    .filter(tr -> (tr.getAccount().getUser().getUserId() == user.getUserId()))
             .filter(transaction -> (transaction.getDate().isAfter(from) && transaction.getDate().isBefore(to)))
             .filter(transaction -> (transaction.getAccount().getName().equals(accountService.getAccountNameByAccountId(accountId))))
             .collect(Collectors.toSet());

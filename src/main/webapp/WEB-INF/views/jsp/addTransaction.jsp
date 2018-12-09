@@ -59,13 +59,11 @@
                                         });
                                       }
                                     };
-
                                     request.open("GET", "/account/getCategory/" + sel);
                                     request.send();
                                   }
                                 </script>
                             </select>
-                                <%-- </f:select> --%>
                         </div>
                         <div class="form-group">
                             <label>Currency</label>
@@ -80,20 +78,14 @@
                             <label>Account</label>
                             <select class="form-control select2" style="width: 100%;"
                                     data-placeholder="Select an account" name="account">
-                                <option selected="selected"><c:out
+                                <option><c:out
                                         value="${ sessionScope.accountName }"></c:out></option>
-                                <c:forEach items="${accounts}" var="account">
-                                    <option><c:out value="${account.name}"></c:out></option>
-                                </c:forEach>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Category</label>
                             <select class="form-control select2" style="width: 100%;"
                                     data-placeholder="Select a category" name="category" id="cat">
-                                <!--<c:forEach items="${categories }" var="category">
-                                  <option><c:out value="${category.name}"></c:out></option>
-                              </c:forEach>-->
                             </select>
                         </div>
                         <div class="form-group">
@@ -106,7 +98,6 @@
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                            <!--  <input type="text" class="form-control" placeholder="Amount" name="amount"> -->
                             <f:input path="amount" type="text" cssClass="form-control" placeholder="Amount"/>
                         </div>
                         <div class="form-group">

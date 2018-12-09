@@ -62,7 +62,6 @@
                                         });
                                       }
                                     };
-
                                     request.open("GET", "/account/getCategory/" + sel);
                                     request.send();
                                   }
@@ -83,10 +82,7 @@
                             <label>Account</label>
                             <select class="form-control select2" style="width: 100%;"
                                     data-placeholder="Select an account" name="account">
-                                <option selected="selected"><c:out value="${ editTransactionAccount }"></c:out></option>
-                                <c:forEach items="${allAccounts }" var="account">
-                                    <option><c:out value="${account.name}"></c:out></option>
-                                </c:forEach>
+                                <option><c:out value="${ editTransactionAccount }"></c:out></option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -104,7 +100,6 @@
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                                <%-- <input type="text" class="form-control" placeholder="Amount" name="amount" value="${ editTransactionAmount }"> --%>
                             <f:input path="amount" type="text" cssClass="form-control" placeholder="Amount"
                                      value="${ editTransactionAmount }"/>
                         </div>
@@ -135,7 +130,6 @@
                     </div>
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Save</button>
-                            <%--<a href="<c:url value="/account/${sessionScope.accountId}"></c:url>" class="btn btn-default">Cancel</a>--%>
                         <a class="btn btn-default" href="javascript:history.back(1)">Cancel</a>
                     </div>
                     <%-- </form> --%>

@@ -48,14 +48,9 @@ public class Account {
   @Column(name = "amount")
   private BigDecimal amount;
 
-
   @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Currency.class)
   @JoinColumn(name = "currency_id", referencedColumnName = "currency_id")
   private Currency currency;
-
-  //    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
-  //    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-  //    private User user;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
   private List<Transaction> transactions;
@@ -70,20 +65,6 @@ public class Account {
     this.transactions = new ArrayList<>();
     this.budgets = new ArrayList<>();
     this.plannedPayments = new ArrayList<>();
-  }
-
-  public Account(String name, BigDecimal amount, User user,
-                 List<Transaction> transactions, List<Budget> budgets, List<PlannedPayment> plannedPayments) {
-    this.name = name;
-    this.amount = amount;
-    //        this.user = user;
-    this.transactions = transactions;
-    this.budgets = budgets;
-    this.plannedPayments = plannedPayments;
-  }
-
-  public Account(String name, BigDecimal amount, User user) {
-    this(name, amount, user, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
   }
 
   public long getAccountId() {
@@ -109,14 +90,6 @@ public class Account {
   public void setAmount(BigDecimal amount) {
     this.amount = amount;
   }
-
-  //    public User getUser() {
-  //        return user;
-  //    }
-  //
-  //    public void setUser(User user) {
-  //        this.user = user;
-  //    }
 
   public List<Transaction> getTransactions() {
     return Collections.unmodifiableList(transactions);
@@ -201,9 +174,6 @@ public class Account {
     } else if (!transactions.equals(other.transactions)) {
       return false;
     }
-    //        if (user != other.user) {
-    //            return false;
-    //        }
     return true;
   }
 }

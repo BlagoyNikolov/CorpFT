@@ -14,15 +14,9 @@ import java.util.Set;
  */
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
-  List<Budget> findByAccount(Account account);
-
-  List<Budget> findByCategory(Category category);
-
   Set<Budget> findByCategoryAndAccount(Category category, Account account);
 
   List<Budget> findByUserUserId(Long userId);
 
   Budget findByBudgetId(long budgetId);
-
-  Set<Budget> findAllByNameIsLike(String keyword);
 }
