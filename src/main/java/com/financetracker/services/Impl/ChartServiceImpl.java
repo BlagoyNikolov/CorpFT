@@ -48,16 +48,6 @@ public class ChartServiceImpl implements ChartService {
     return accounts;
   }
 
-  public BigDecimal calculateAllBalance(Set<Account> accounts) {
-    BigDecimal allBalance = BigDecimal.valueOf(0);
-    for (Account account : accounts) {
-//      Currency euro = currencyService.getCurrencyByCurrencyName("EUR");
-//      BigDecimal convertedAmount = currencyService.convertToAccountCurrency(account.getCurrency(), euro, account.getAmount());
-      allBalance = allBalance.add(account.getAmount());
-    }
-    return allBalance;
-  }
-
   public Map<String, BigDecimal> getCashFlowStructure(User user) {
     TreeMap<String, BigDecimal> result = new TreeMap<>();
     Set<Category> categories = categoryService.getAllCategoriesByType(PaymentType.EXPENSE);

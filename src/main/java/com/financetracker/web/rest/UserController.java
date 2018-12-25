@@ -113,9 +113,8 @@ public class UserController {
   public String main(HttpSession session, Model viewModel) {
     User user = (User) session.getAttribute("user");
     TreeSet<Account> accounts = chartService.getAllAccounts(user);
-    BigDecimal allBalance = chartService.calculateAllBalance(accounts);
     BigDecimal allAccountsBalance = accountService.calculateAllAccountBalance();
-    Map<LocalDate, BigDecimal> finalDefaultTransactions = chartService.getGraphData(user, allBalance);
+    Map<LocalDate, BigDecimal> finalDefaultTransactions = chartService.getGraphData(user, allAccountsBalance);
     String balance = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(allAccountsBalance);
     viewModel.addAttribute("accounts", accounts);
     viewModel.addAttribute("balance", balance);

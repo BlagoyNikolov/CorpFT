@@ -17,8 +17,6 @@ import java.util.TreeSet;
 public interface ChartService {
   TreeSet<Account> getAllAccounts(User user);
 
-  BigDecimal calculateAllBalance(Set<Account> accounts);
-
   Map<String, BigDecimal> getCashFlowStructure(User user);
 
   TreeMap<String, BigDecimal> getFilteredCashFlowStructure(User user, LocalDateTime from, LocalDateTime to,

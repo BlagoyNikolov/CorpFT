@@ -5,6 +5,7 @@ import com.financetracker.entities.Category;
 import com.financetracker.entities.Currency;
 import com.financetracker.entities.Transaction;
 import com.financetracker.entities.PaymentType;
+import com.financetracker.entities.TransactionVisualizer;
 import com.financetracker.entities.User;
 import com.financetracker.repositories.AccountRepository;
 import com.financetracker.services.AccountService;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -181,8 +183,11 @@ public class AccountServiceImpl implements AccountService {
   }
 
   private BigDecimal calculateAccountAmount(Account account) {
-    Currency euro = currencyService.getCurrencyByCurrencyName("EUR");
-    return  currencyService.convertToAccountCurrency(account.getCurrency(), euro, account.getAmount());
+    return account.getTransactions()
+        .stream()
+        .map(transaction -> new TransactionVisualizer(transaction))
+        .map(TransactionVisualizer::getEurAmount)
+        .collect(Collectors.reducing(BigDecimal.ZERO, BigDecimal::add));
   }
 
   private Locale determineCurrencyLocale(Long accountId) {

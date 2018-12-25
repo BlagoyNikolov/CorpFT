@@ -93,7 +93,7 @@ public class ChartController {
   public String getCashflowTrend(HttpSession session, Model model) {
     User user = (User) session.getAttribute("user");
     Set<Account> accounts = accountService.getAllAccounts();
-    BigDecimal allBalance = chartService.calculateAllBalance(accounts);
+    BigDecimal allBalance = accountService.calculateAllAccountBalance();
     Map<LocalDate, BigDecimal> finalDefaultTransactions = chartService.getGraphData(user, allBalance);
     model.addAttribute("accounts", accounts);
     model.addAttribute("defaultTransactions", finalDefaultTransactions);
