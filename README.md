@@ -1,14 +1,16 @@
 # Finance Tracker
 
-The FinanceTracker is a web based Java Application which helps you manage your bank accounts. It keeps track of all your cash inflow and outflow and collects information about your financial wealth. The app also provides tools that would help you build yourself a financial plan. All of the information is presented via cutting edge technologies in software and design.
+The FinanceTracker is a web based Java Application which helps your company manage its departments. It keeps track of each department cash
+inflow, outflow and collects information about the company's financial wealth.
+The app also provides tools that would help its users build a financial plan. All of the information is presented via cutting edge technologies in software and design.
 
 ## Features
 
-* Add multiple accouts per user (bank accounts, credit cards, cash, etc.)
-* Log transactions related to accounts
-* Create personal categories (income or expense)
-* Execute transfers of funds between accounts
-* Make budgets for a certain period, account and value
+* Add multiple departments (Accounting, Management, Finance, etc.)
+* Log transactions related to departments
+* Create categories (income or expense)
+* Execute transfers of funds between departments
+* Make budgets for a fixed period, departments and value
 * Create planned payments (will be executed at a specified date)
 * ChartJS diagrams offering filtering and pleasing visualization of information (transactions, categories, etc.)
 * Reports offering filtering of transactions depending on specified user criteria
@@ -17,10 +19,10 @@ The FinanceTracker is a web based Java Application which helps you manage your b
 
 * Java EE
 * Spring Boot
-* Spring Data JPA (JPA + Hibernate)
+* Spring Data (JPA + Hibernate)
 * MySQL
 * JSP views
-* Jquery
+* jQuery
 * Boostrap
 * AdminLTE template
 * HTML5, JS, CSS3
@@ -31,9 +33,7 @@ The FinanceTracker is a web based Java Application which helps you manage your b
 
 * Build with Maven
 * Create only the MySQL schema (finance_tracker_hibernate), hibernate will populate it with the tables 
-  OR
-  Run the SQL creation script provided in this repository (/diagrams and model)
-* No additional configuration required
+* Execute a few number of SQL queries located in the /diagrams and model folder
 
 ## Screenshots
 
