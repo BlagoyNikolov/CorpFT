@@ -87,21 +87,23 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Transactional
-  public void makeTransferToOtherAccount(User user, String inputFromAccount, String inputToAccount, String inputAmount) {
-    BigDecimal amount = BigDecimal.valueOf(Double.valueOf(inputAmount));
-    Account from = getAccountByAccountName(inputFromAccount);
-    Account to = getAccountByAccountName(inputToAccount);
+  public void makeTransferToOtherAccount(User user, String fromAccount, String toAccount, String inputAmount) {
+    BigDecimal eurAmount = BigDecimal.valueOf(Double.valueOf(inputAmount));
+    Account from = getAccountByAccountName(fromAccount);
+    Account to = getAccountByAccountName(toAccount);
     Currency fromCurrency = from.getCurrency();
     Currency toCurrency = to.getCurrency();
+    Currency euro = currencyService.getCurrencyByCurrencyName("EUR");
 
-    BigDecimal currentAccountAmount = from.getAmount();
-    BigDecimal newCurrentAccountAmount = currentAccountAmount.subtract(amount);
-    from.setAmount(newCurrentAccountAmount);
+    BigDecimal fromAccountAmount = from.getAmount();
+    BigDecimal withdrawalAmount = currencyService.convertToAccountCurrency(euro, fromCurrency, eurAmount);
+    BigDecimal newFromAccountAmount = fromAccountAmount.subtract(withdrawalAmount);
+    from.setAmount(newFromAccountAmount);
     updateAccount(from);
 
-    BigDecimal convertedAmount = currencyService.convertToAccountCurrency(fromCurrency, toCurrency, amount);
     BigDecimal otherAccountAmount = to.getAmount();
-    BigDecimal newOtherAccountAmount = otherAccountAmount.add(convertedAmount);
+    BigDecimal depositAmount = currencyService.convertToAccountCurrency(euro, toCurrency, eurAmount);
+    BigDecimal newOtherAccountAmount = otherAccountAmount.add(depositAmount);
     to.setAmount(newOtherAccountAmount);
     updateAccount(to);
 
@@ -109,13 +111,14 @@ public class AccountServiceImpl implements AccountService {
     Transaction t1 = new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.EXPENSE)
         .setDate(LocalDateTime.now())
-        .setAmount(amount)
-        .setAccountAmount(amount)
+        .setAmount(eurAmount)
+        .setAccountAmount(withdrawalAmount)
+        .setEurAmount(eurAmount)
         .setAccount(from)
         .setCategory(transferCategory)
         .setCategoryName(transferCategory.getName())
         .setUser(user)
-        .setCurrency(from.getCurrency())
+        .setCurrency(euro)
         .setAccountCurrency(from.getCurrency())
         .setDescription(TRANSFER_TO_ACCOUNT + to.getName())
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())
@@ -123,13 +126,14 @@ public class AccountServiceImpl implements AccountService {
     Transaction t2 = new Transaction.TransactionBuilder()
         .setPaymentType(PaymentType.INCOME)
         .setDate(LocalDateTime.now())
-        .setAmount(convertedAmount)
-        .setAccountAmount(convertedAmount)
+        .setAmount(eurAmount)
+        .setAccountAmount(depositAmount)
+        .setEurAmount(eurAmount)
         .setAccount(to)
         .setCategory(transferCategory)
         .setCategoryName(transferCategory.getName())
         .setUser(user)
-        .setCurrency(to.getCurrency())
+        .setCurrency(euro)
         .setAccountCurrency(to.getCurrency())
         .setDescription(TRANSFER_FROM_ACCOUNT + from.getName())
         .setInsertedBy(user.getFirstName() + " " + user.getLastName())

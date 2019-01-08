@@ -34,7 +34,7 @@
 		  			 </c:if>
 		              <div class="box-body">
 		              <div class="form-group">
-		                  <label>Amount</label>
+		                  <label>Amount in EUR</label>
 		                  <input type="text" class="form-control" placeholder="Amount" name="amount">
 		                </div>
 		                <div class="form-group">
