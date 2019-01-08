@@ -56,7 +56,7 @@
                                 <th>Added by</th>
                                 <th>Date</th>
                                 <th>Amount</th>
-                                <th>Account amount</th>
+                                <th>Department amount</th>
                                 <th>Category</th>
                             </tr>
                             <c:forEach items="${pagedTransactions}" var="transaction">

@@ -38,7 +38,7 @@
 		                  <input type="text" class="form-control" placeholder="Amount" name="amount">
 		                </div>
 		                <div class="form-group">
-			                <label>From Account</label>
+			                <label>From Department</label>
 			                <select class="form-control select2" style="width: 100%;" data-placeholder="Select an account" name="fromAccount">
 			                <option selected="selected"><c:out value="${ firstAccount.name }"></c:out></option>
 			                  <c:forEach items="${ userAccounts }" var="account">
@@ -47,7 +47,7 @@
 			                </select>
 			            </div>
 		                 <div class="form-group">
-			                <label>To Account</label>
+			                <label>To Department</label>
 			                <select class="form-control select2" style="width: 100%;" data-placeholder="Select an account" name="toAccount">
 			                  <c:forEach items="${ userAccounts }" var="account">
 			                	 <option><c:out value="${account.name}"></c:out></option>
@@ -57,7 +57,7 @@
                		  </div>
                		  <div class="box-footer">
 		                <input id="submitBtn" type="button" name="btn" data-toggle="modal" data-target="#confirm-submit" class="btn btn-primary" value="Execute"></input>
-		                <a href="<c:url value="/account/${sessionScope.accountId}"></c:url>" class="btn btn-default">Cancel</a>
+		                <a href="javascript:history.back(1)" class="btn btn-default">Cancel</a>
 		              </div>
 		            </form>
 	          	</div>

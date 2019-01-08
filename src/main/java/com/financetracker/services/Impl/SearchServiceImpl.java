@@ -57,6 +57,10 @@ public class SearchServiceImpl implements SearchService {
   }
 
   public boolean isKeywordValid(String keyword) {
-    return !keyword.isEmpty() && keyword != null && keyword.matches("[^\\s]+") && keyword.length() > 2;
+    return !keyword.isEmpty()
+        && keyword != null
+        && keyword.matches("[^\\s]+")
+        && keyword.length() > 2
+        && keyword.length() < 20;
   }
 }

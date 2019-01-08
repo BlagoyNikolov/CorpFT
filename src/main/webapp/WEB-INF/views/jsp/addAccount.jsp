@@ -33,7 +33,7 @@
                             <label style="color: red"><c:out value="${error}"/></label>
                         </c:if>
                         <div class="form-group">
-                            <label>Account name</label>
+                            <label>Department name</label>
                             <f:input type="text" cssClass="form-control" placeholder="Name" path="name"/>
                         </div>
                         <div class="form-group">

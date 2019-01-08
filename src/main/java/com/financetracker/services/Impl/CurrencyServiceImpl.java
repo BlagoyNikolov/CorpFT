@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -29,7 +30,10 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   @Override
   public List<String> getCurrencyList() {
-    return Arrays.asList("BGN", "CAD", "EUR", "GBP", "JPY", "USD");
+    return currencyRepository.findAll()
+        .stream()
+        .map(Currency::getCurrencyId)
+        .collect(Collectors.toList());
   }
 
   @Override

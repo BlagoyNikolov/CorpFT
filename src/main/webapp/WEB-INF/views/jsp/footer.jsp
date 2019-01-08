@@ -29,7 +29,7 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 2.1.0
       </div>
-      <strong>Copyright &copy; 2018 | Finance Tracker at <i class="fa fa-github"></i><a href="https://github.com/BlagoyNikolov/FinanceTracker"> GitHub</a>.</strong> All rights reserved.
+      <strong>Copyright &copy; 2019 | Finance Tracker at <i class="fa fa-github"></i><a href="https://github.com/BlagoyNikolov/CorpFT"> GitHub</a>.</strong> All rights reserved.
     </div>
     <!-- /.container -->
   </footer>

@@ -89,10 +89,10 @@
 	                
 	                <div class="col-sm-2" style="display:table-cell; vertical-align:middle; text-align:center">
 	                 <div class="form-group">
-			                <label>Account</label>
+			                <label>Departments</label>
 			                <select class="form-control select2" style="width: 100%;" data-placeholder="Select an account" name="account" id="account">
 			            <%--       <option selected="selected"><c:out value="${ sessionScope.accountName }"></c:out></option> --%>
-			            	<option>All accounts</option>
+			            	<option>All Departments</option>
 			                  <c:forEach items="${allAccounts}" var="account">
 			                	  <option><c:out value="${account.name}"></c:out></option>
 			                  </c:forEach>
@@ -116,10 +116,10 @@
 						<tr>
 							<th>Description</th>
 							<th>Added by</th>
-                            <th>Account</th>
+                            <th>Department</th>
 							<th>Date</th>
 							<th>Amount</th>
-							<th>Account amount</th>
+							<th>Department amount</th>
 							<th>Category</th>
 							<th>Edit</th>
 						</tr>

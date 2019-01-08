@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChartServiceImpl implements ChartService {
 
-  public static final String ALL_ACCOUNTS = "All accounts";
+  public static final String ALL_ACCOUNTS = "All Departments";
   public static final String INCOME = "INCOME";
   public static final String EXPENSE = "EXPENSE";
 
@@ -38,9 +38,6 @@ public class ChartServiceImpl implements ChartService {
 
   @Autowired
   private CategoryService categoryService;
-
-  @Autowired
-  private CurrencyService currencyService;
 
   public TreeSet<Account> getAllAccounts(User user) {
     TreeSet<Account> accounts = new TreeSet<>((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()));

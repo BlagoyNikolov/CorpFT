@@ -1,7 +1,5 @@
-<%@page import="java.math.BigDecimal"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="com.financetracker.entities.User"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -31,9 +29,9 @@
 						<div>
 							<p style="font-size: 20px">
 								The <b>Finance</b>Tracker is a web based Java Application which
-								helps you manage your bank accounts. It keeps track of all your cash 
-								inflow and outflow and collects information about your financial wealth. 
-								The app also provides tools that would help you build yourself a financial plan. 
+								helps your company manage its departments. It keeps track of each department cash
+								inflow, outflow and collects information about the company's financial wealth.
+								The app also provides tools that would help its users build a financial plan.
 								All of the information is presented via cutting edge technologies in software and design.
 							<p>
 						</div>
@@ -68,10 +66,10 @@
 						    	<img src="https://upload.wikimedia.org/wikipedia/commons/2/22/Hibernate_logo_a.png" alt="Hibernate" width="300" height="auto">
 						    </div>
 						    <div class="col-sm-4" style="display:table-cell; vertical-align:middle; text-align:center">
-						    	<img src="https://www.shareicon.net/data/512x512/2015/10/24/661304_interface_512x512.png" alt="JSP" width="180" height="auto">   
+						    	<img src="https://www.shareicon.net/data/512x512/2015/10/24/661304_interface_512x512.png" alt="JSP" width="180" height="auto">
 						    </div>
 						    <div class="col-sm-4" style="display:table-cell; vertical-align:middle; text-align:center">
-						    	<img src="http://marketplace.intelledox.com/wp-content/uploads/edd/2017/01/Bootstrap.png" alt="Bootstrap" width="250" height="auto">   
+						    	<img src="http://pluspng.com/img-png/bootstrap-png-bootstrap-512.png" alt="Bootstrap" width="250" height="auto">
 						    </div>
 						</div>
 						<div class="row">

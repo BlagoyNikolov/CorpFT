@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
 
   public static final String ALL_CATEGORIES = "All categories";
-  public static final String ALL_ACCOUNTS = "All accounts";
+  public static final String ALL_ACCOUNTS = "All Departments";
   public static final String ALL_TYPES = "All types";
 
   @Autowired

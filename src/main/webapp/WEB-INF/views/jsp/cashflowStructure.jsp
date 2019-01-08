@@ -74,9 +74,9 @@
 	                </div>
 	                <div class="col-sm-3" style="display:table-cell; vertical-align:middle; text-align:center">
 	                 <div class="form-group">
-			                <label>Account</label>
+			                <label>Department</label>
 			                <select class="form-control select2" style="width: 100%;" data-placeholder="Select an account" name="account">
-			                	<option>All accounts</option>
+			                	<option>All Departments</option>
 			                  <c:forEach items="${accounts}" var="account">
 			                	  <option><c:out value="${account.name}"></c:out></option>
 			                  </c:forEach>

@@ -90,7 +90,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Account</label>
+                            <label>Department</label>
                             <select class="form-control select2" style="width: 100%;"
                                     data-placeholder="Select an account" name="account">
                                 <option selected="selected"><c:out

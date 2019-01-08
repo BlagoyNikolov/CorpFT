@@ -24,8 +24,8 @@
 
     <div class="content-wrapper">
          <section class="content-header">
-            <h2>Current balance across all accounts: <b style="font-size: 30px"><c:out value="${ balance }"></c:out></b></h2>
-            <h1>All accounts</h1>
+            <h2>Current balance across all departments: <b style="font-size: 30px"><c:out value="${ balance }"></c:out></b></h2>
+            <h1>All departments</h1>
         </section>
 
         <section class="content">

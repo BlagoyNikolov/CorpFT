@@ -77,7 +77,7 @@ public class ChartController {
     LocalDateTime[] dateRange = DateConverters.dateRange(date);
 
     long accId = 0;
-    if (!account.equals("All accounts")) {
+    if (!account.equals("All Departments")) {
       accId = accountService.getAccountId(user, account);
     }
 

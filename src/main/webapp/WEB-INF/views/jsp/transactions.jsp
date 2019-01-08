@@ -65,7 +65,7 @@
                         <th>Added by</th>
                         <th>Date</th>
                         <th>Amount</th>
-                        <th>Account amount</th>
+                        <th>Department amount</th>
                         <th>Category</th>
                         <th>Edit</th>
                     </tr>
