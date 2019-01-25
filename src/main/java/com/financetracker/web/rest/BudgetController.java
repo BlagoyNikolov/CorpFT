@@ -63,7 +63,7 @@ public class BudgetController {
     model.addAttribute(ACCOUNTS, accounts);
     model.addAttribute(CATEGORIES, categories);
     model.addAttribute(BUDGET, new Budget());
-
+    session.setAttribute("link", "addBudget");
     return "addBudget";
   }
 
